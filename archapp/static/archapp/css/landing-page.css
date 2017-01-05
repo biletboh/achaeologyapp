@@ -1776,3 +1776,25 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
     }
 }
 
+/* Custom Css */
+.projects {
+  margin-top: 300px !important;
+  background-color: rgba(12, 81, 108, 0.65);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.125);
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+.projects ul {
+  padding: 20px;
+}
+.projects li {
+  list-style: none;
+  background-color: rgba(52, 119, 144, 0.55);
+}
+.projects li a {
+  font-size: 14pt;
+  color: inherit;
+  padding: 10px 10px 10px 20px;
+}

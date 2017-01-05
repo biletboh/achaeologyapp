@@ -401,3 +401,11 @@ class UserDelete(LoginRequiredMixin, DeleteView):
     model = User
     slug_field = "username"
     success_url = '/signup/'
+
+class ProjectsPage(TemplateView):
+    template_name = 'archapp/projects.html'
+    def get_context_data(self, **kwargs):
+        context = super(ProjectsPage, self).get_context_data(**kwargs)
+        context['title'] = "Projects"
+        return context
+

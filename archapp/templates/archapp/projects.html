@@ -1,0 +1,38 @@
+{% extends "archapp/base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="section section-gray">
+  <div id="projects">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 text-center ">
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <img src="http://placehold.it/750x450" class="img-responsive" alt="images">
+          </div>
+          <div class="col-md-6">
+            <img src="http://placehold.it/750x450" class="img-responsive" alt="images">
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <img src="http://placehold.it/750x450" class="img-responsive" alt="images">
+          </div>
+          <div class="col-md-6">
+            <img src="http://placehold.it/750x450" class="img-responsive" alt="images">
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 text-center">
+        <h3>{% trans "Log in" %}</h3>
+        <div class="row">
+          <div class="col-md-12 text-left">
+            Create your own handy catalog of archaeological sites and share it with the world. The database contains awesome filters and Google Maps functionality that make your work with archaeological data convenient and comprehensive.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

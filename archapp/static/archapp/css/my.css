@@ -633,3 +633,8 @@ hr {
   margin-top: 5px;
   background-color: rgba(12, 81, 108, 0.9);
 }
+
+.no-gutter > [class*='col-'] {
+  padding-right: 0;
+  padding-left: 0;
+}

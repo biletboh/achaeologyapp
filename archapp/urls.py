@@ -15,6 +15,7 @@ urlpatterns = [
         url(r'^(?P<pk>[0-9]+)/delete/$', views.SiteDelete.as_view(), name = 'deletesite'),
 
         # sites overview and search
+        url(r'^projects/$', views.ProjectsPage.as_view(), name = 'projects'),
         url(r'^all/$', views.AllSites.as_view(), name = 'allsites'),
         url(r'^search/$', views.Search.as_view(), name = 'results'),
 
