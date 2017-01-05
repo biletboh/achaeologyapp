@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% get_current_language as LANGUAGE_CODE %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,21 +62,16 @@ archapp.upload.handles = [];
 <link href="{% static 'archapp/jquery-ui/jquery-ui.min.css' %}" media="all" rel="stylesheet" type="text/css" />
 <script src="{% static 'archapp/jquery-ui/jquery-ui.min.js' %}"></script>
 
-<!-- select menu -->
 <script>
-$( function() {
-  $( "#language" )
-    .selectmenu({
-    position: { my : "left-30 top", at: "left bottom+15" } 
-  }
-  )
-    .selectmenu({
-      change: function( event, data ) {
-        $("#language").change();
-      }
-    });
+$(function(){
+  $(".dropdown-menu > li > button").click(function() {
+    var language = this.value;
+    $("#language").val(language);
+    $("#lang-form").submit();
+  });
 });
 </script>
+
 
 <!-- slider -->
 <script src="{% static 'archapp/js/slider.js' %}"></script>
@@ -111,9 +107,9 @@ $( function() {
     <div class="collapse navbar-collapse" id="example" >
       <ul class="nav navbar-nav navbar-right">
         <li>
-        <form action="{% url "set_language" %}" method="post">
+        <form id="lang-form" action="{% url "set_language" %}" method="post">
           {% csrf_token %}
-          <select name="language" id="language" class="" onchange="this.form.submit()">
+          <select name="language" id="language" class="" hidden>
             {% get_language_info_list for LANGUAGES as langs %}
             {% for lang in langs %}
             <option value="{{ lang.code }}"
@@ -124,6 +120,24 @@ $( function() {
           </select>
         </form>
         </li>
+        <li>
+          <div class="dropdown nav-language">
+            <a href="#" data-toggle="dropdown">
+              {% for lang in langs %}
+              {% if lang.code == LANGUAGE_CODE %}
+              {{ lang.name_local }}
+              {% endif %}
+              {% endfor %}
+            </a>
+            <ul class="dropdown-menu pull-right text-center" aria-labelledby="dLabel">
+            {% get_language_info_list for LANGUAGES as langs %}
+            {% for lang in langs %}
+            <li {% if lang.code == LANGUAGE_CODE %} class="highlighted"{% endif %}><button value="{{ lang.code }}" class="btn">{{ lang.name_local }}</button></li>
+            {% endfor %}
+            </ul>
+          </div>
+        </li>
+
         {% if user.is_authenticated %}
         <li>
         <a href ="{% url 'archapp:newsite'%}" class="">{% trans "New site" %}</a>
