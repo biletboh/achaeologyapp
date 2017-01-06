@@ -440,7 +440,7 @@ a:focus, a:active {
   padding: 20px 15px;
   font-size: 20px;
 }
-.navbar .navbar-nav > li > a, .navbar .navbar-nav > li > form > select {
+.navbar .navbar-nav > li > a {
   padding: 5px 15px;
   margin: 15px 3px;
   margin-top: 35px;
@@ -1618,7 +1618,38 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
     #video_background{
         display: none;
     }
-
+    .navbar .navbar-brand {
+      padding: 10px;
+    }
+    .navbar .btn {
+      margin: 0px 3px;
+      font-size: 13pt;
+    }
+    .nav .dropdown-menu > li > button {
+      width:100%;
+    }
+    .navbar-transparent .navbar-nav > li > .nav-language .dropdown-menu {
+      margin-top: 0;
+      background-color: rgba(12, 84, 108, 0.3);
+    }
+    .open > .dropdown-menu {
+      transition: 2s ease-out;
+    }
+    .logo-container {
+      margin-top: 0;
+    }
+    .navbar-transparent .navbar-nav > li > .nav-language, .navbar .navbar-nav > li > a {
+      margin: 0;
+    }
+    .landing-page .parallax .description h2 {
+      font-size: 24pt;
+    }
+    .landing-page .footer {
+      padding: 5px;
+    }
+    .footer .copyright {
+      margin: 5px 3px;
+    }
 }
 
 @media (min-width: 768px){
@@ -1732,7 +1763,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
     text-align: center;
   }
   .landing-page .navbar-top{
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.85);
   }
   .landing-page .parallax {
     height: 550px;
