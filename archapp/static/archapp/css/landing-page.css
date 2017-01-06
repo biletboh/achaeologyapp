@@ -84,8 +84,8 @@ a:focus, a:active {
 }
 
 .btn {
-  border-width: 2px;
-  background-color: #0C526C;
+  border-width: 1px;
+  background-color: #186886;
   font-weight: 400;
   filter: alpha(opacity=80);
   padding: 8px 16px;
@@ -93,9 +93,9 @@ a:focus, a:active {
   color: #888888;
 }
 .btn:hover, .btn:focus, .btn:active, .btn.active, .open > .btn.dropdown-toggle {
-  background-color: transparent;
+  background-color: rgba(24, 104, 134, 0.9);
   color: #0C526C;
-  border-color: #0C526C;
+  border-color: #186886;
 }
 .btn:disabled, .btn[disabled], .btn.disabled {
   background-color: transparent;
@@ -131,14 +131,25 @@ a:focus, a:active {
   padding: 8px;
 }
 
+.btn-default.active:hover {
+  background-color: rgba(24, 104, 134, 0.6);
+  color: #fff;
+  border-color: rgba(24, 104, 134, 0.6);
+}
+.toggle.btn-primary:hover {
+  background-color: rgba(24, 104, 134, 0.6);
+  border-color: rgba(24, 104, 134, 0.9);
+}
+
+
 .btn-primary {
-  border-color: #0C526C;
+  border-color: #186886;
   color: #fff;
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
-  background-color: #EEEEEE;
-  color: #0C526C;
-  border-color: #0C526C;
+  background-color: rgba(24, 104, 134, 0.9);
+  color: #fff;
+  border-color: white;
 }
 .btn-primary:disabled, .btn-primary[disabled], .btn-primary.disabled {
   background-color: transparent;
@@ -1801,7 +1812,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
   color: white;
 }
 .work-page .section {
-  margin-top: 52px;
+  margin-top: 50px;
 }
 .work-page .section p {
   margin-top: 10px;
