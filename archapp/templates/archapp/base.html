@@ -132,7 +132,7 @@ $(function(){
             <ul class="dropdown-menu pull-right text-center" aria-labelledby="dLabel">
             {% get_language_info_list for LANGUAGES as langs %}
             {% for lang in langs %}
-            <li {% if lang.code == LANGUAGE_CODE %} class="highlighted"{% endif %}><button value="{{ lang.code }}" class="btn">{{ lang.name_local }}</button></li>
+            <li {% if lang.code == LANGUAGE_CODE %} class="highlighted"{% endif %}><button value="{{ lang.code }}" class="btn btn-sm">{{ lang.name_local }}</button></li>
             {% endfor %}
             </ul>
           </div>
@@ -152,14 +152,14 @@ $(function(){
           </a>
           <ul class="dropdown-menu pull-right text-left" aria-labelledby="dLabel">
             <li>
-            <a href = "{% url 'archapp:userprofile' user %}" class="btn btn-color btn-sm">{% trans "My Profile" %}</a>
+            <a href = "{% url 'archapp:userprofile' user %}" class="btn btn-sm">{% trans "My Profile" %}</a>
             </li>
             <li>
-            <a href = "{% url 'archapp:user-update' user %}" class="btn btn-color btn-sm">{% trans "Update Profile" %}</a>
+            <a href = "{% url 'archapp:user-update' user %}" class="btn btn-sm">{% trans "Update Profile" %}</a>
             </li>
 
             <li>
-            <a href = "{% url 'archapp:logout' %}" class="btn btn-color btn-sm">{% trans "Log out" %}</a>
+            <a href = "{% url 'archapp:logout' %}" class="btn btn-sm">{% trans "Log out" %}</a>
             </li>
           </ul>
         </div>
