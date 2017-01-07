@@ -27,7 +27,6 @@ a:hover, a:focus {
 .background {
   background-color: #F5F5F5;
 }
-
 .box {
   background: #FFFFFF;
   border-radius: 4px;
@@ -38,11 +37,13 @@ a:hover, a:focus {
   margin-bottom: 15px;
 }
 
-.mapped
-{
+.mapped {
   display: none;
 }
 
+.listed > h4 {
+  margin-left: 15px;
+}
 .checkbox {
   margin-top: 0px;
 }
@@ -122,6 +123,13 @@ a:hover, a:focus {
 }
 
 /* Forms */ 
+@media (max-width: 767px) {
+  .form-custom {
+    height: 32px !important;
+    font-size: 12pt !important;
+    padding: 3px 12px;
+  }
+}
 @media (min-width:768px) {
   .form-inline .form-control {
     width: 100%;
@@ -167,6 +175,13 @@ a:hover, a:focus {
 @media (min-width : 1200px) {
   .location {
     margin-right: 15px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .box .form-custom {
+    height: 36px;
+    font-size: 14pt;
   }
 }
 
