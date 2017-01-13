@@ -92,60 +92,49 @@ a:hover, a:focus {
   text-align:center;
 }
 
-/* Header */
-/*.nav-top {
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-.header {
-  height: 55px;
-  background: #C3D7DF;
-}
-.header a:hover {
- color: #F5F5F5;
-} 
-.navbar-header {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-.navbar-brand {
-  color: #6991AC;
-  font-size: 2em;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
-}
-*/
-
 .padding {
   padding-top: 15px;
 }
 
 /* Forms */ 
-@media (min-width:768px) {
-  .form-inline .form-control {
-    width: 100%;
-  }
-}
+
 .form-custom {
   height: 28px;
   font-size: 12px;
   padding: 3px 12px;
 }
 .form-group-custom {
-  margin-bottom: 5px;
+  max-width: 375px;
+  padding: 15px;
+  margin: 0 auto;
 }
-
+.form-group-custom:has(> .form-group-item > textarea) {
+  max-width: 1024px;
+}
+.form-group-item {
+  margin: 5px 0;
+}
+.errorlist {
+  padding: 0;
+}
+.errorlist > li {
+  color: #a94442;
+  list-style: none;
+}
+  
 /* Buttons */
 .btn-color {
-    color: #6991AC;
+  color: #6991AC;
 }
 .btn-border-color {
-    border-color: #C3D7DF;
+  border-color: #C3D7DF;
 }
 .btn-postion {
-    position: relative;
-    right: 5px;
+  position: relative;
+  right: 5px;
+}
+.qq-upload-button {
+  width: 100% !important;
 }
 
 /* Maps */
@@ -155,6 +144,12 @@ a:hover, a:focus {
   margin-top: 15px;
   margin-bottom: 15px;
 }
+
+@media (min-width:768px) {
+  .form-inline .form-control {
+    width: 100%;
+  }
+}
 @media (max-width : 1200px) {
   .map-preview {
     height: 250px;
@@ -162,7 +157,7 @@ a:hover, a:focus {
     margin-top: 15px;
     margin-bottom: 15px;
   }
-  
+
 }
 @media (min-width : 1200px) {
   .location {
@@ -173,6 +168,7 @@ a:hover, a:focus {
 /*Geolocation*/
 .geo-map {
   height: 500px;
+  margin: 15px 0;
 }
 
 /* ---All sites page--- */

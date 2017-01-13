@@ -1604,88 +1604,93 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
 }
 
 @media (max-width:768px){
-    .fixed-plugin{
-        top: 80px;
-        right: 0px;
-    }
-    .main .container{
-        margin-bottom: 50px;
-    }
-    #video_background{
-        display: none;
-    }
-    .navbar .navbar-brand {
-      padding: 10px;
-    }
-    .navbar .btn {
-      margin: 0px 3px;
-      font-size: 13pt;
-    }
-    .navbar-transparent .navbar-nav > li > .nav-language {
-      padding: 0;
-    }
-    #profile > i {
-      margin: 0;
-    }
-    .nav .dropdown-menu > li > button {
-      width:100%;
-    }
-    #lang-menu, #profile-menu {
-      margin-top: 0;
-      padding: 0;
-      background-color: rgba(12, 84, 108, 0.3);
-    }
-    #lang-menu > li > a, #profile-menu > li > button {
-      color: white;
-      border: none;
-      background-color: transparent;
-      width: 135px;
-    }
-    #lang-menu > li > button, #profile-menu > li > a {
-      display: block;
-      width: 100%;
-      background-color: transparent;
-      color: rgba(255, 255, 255, 0.8);
-      border: none;
-      padding: 3px 20px;
-      margin: 0;
-      clear: both;
-      font-weight: normal;
-      line-height: 1.428;
-      white-space: nowrap;
-      overflow: none;
-    }
-    #lang-menu > li, #profile-menu > li {
-      list-style: none;
-    }
-    #lang-menu > li > button:hover, #profile-menu > li > a:hover {
-      background-color: rgba(52, 119, 144, 0.55);
-      color: white;
-    }
-    .highlighted {
-     background-color: rgba(52, 119, 144, 0.35);
-   } 
-   .work-page .navbar-transparent .navbar-nav > li > .nav-language {
-     padding: 0 !important;
-   }
-   .work-page #lang-menu, .work-page #profile-menu {
-     background-color: rgba(255, 255, 255, 0.075);
-    }
-    .logo-container {
-      margin-top: 0;
-    }
-    .navbar-transparent .navbar-nav > li > .nav-language, .navbar .navbar-nav > li > a {
-      margin: 0;
-    }
-    .landing-page .parallax .description h2 {
-      font-size: 24pt;
-    }
-    .landing-page .footer {
-      padding: 5px;
-    }
-    .footer .copyright {
-      margin: 5px 3px;
-    }
+  h3 {
+    font-size: 18pt;
+    margin: 10px 0 5px;
+  }
+  .fixed-plugin{
+    top: 80px;
+    right: 0px;
+  }
+  .main .container{
+    margin-bottom: 50px;
+  }
+  
+  #video_background{
+    display: none;
+  }
+  .navbar .navbar-brand, .work-page .navbar .navbar-brand {
+    padding: 10px !important;
+  }
+  .navbar .btn {
+    margin: 0px 3px;
+    font-size: 13pt;
+  }
+  .navbar-transparent .navbar-nav > li > .nav-language {
+    padding: 0;
+  }
+  #profile > i {
+    margin: 0;
+  }
+  .nav .dropdown-menu > li > button {
+    width:100%;
+  }
+  #lang-menu, #profile-menu {
+    margin-top: 0;
+    padding: 0;
+    background-color: rgba(12, 84, 108, 0.3);
+  }
+  #lang-menu > li > a, #profile-menu > li > button {
+    color: white;
+    border: none;
+    background-color: transparent;
+    width: 135px;
+  }
+  #lang-menu > li > button, #profile-menu > li > a {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border: none;
+    padding: 3px 20px;
+    margin: 0;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428;
+    white-space: nowrap;
+    overflow: none;
+  }
+  #lang-menu > li, #profile-menu > li {
+    list-style: none;
+  }
+  #lang-menu > li > button:hover, #profile-menu > li > a:hover {
+    background-color: rgba(52, 119, 144, 0.55);
+    color: white;
+  }
+  .highlighted {
+    background-color: rgba(52, 119, 144, 0.35);
+  } 
+  .work-page .navbar-transparent .navbar-nav > li > .nav-language {
+    padding: 0 !important;
+  }
+  .work-page #lang-menu, .work-page #profile-menu {
+    background-color: rgba(255, 255, 255, 0.075);
+  }
+  .logo-container {
+    margin-top: 0;
+  }
+  .navbar-transparent .navbar-nav > li > .nav-language, .navbar .navbar-nav > li > a {
+    margin: 0;
+  }
+  .landing-page .parallax .description h2 {
+    font-size: 24pt;
+  }
+  .landing-page .footer {
+    padding: 5px;
+  }
+  .footer .copyright {
+    margin: 5px 3px;
+  }
 }
 
 @media (min-width: 768px){
@@ -1797,6 +1802,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
   }
   .landing-page .wrapper{
     text-align: center;
+  }
+  .landing-page.work-page .wrapper {
+    text-align: left;
   }
   .landing-page .navbar-top{
     background: rgba(0, 0, 0, 0.85);
