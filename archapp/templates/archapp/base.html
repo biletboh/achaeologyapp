@@ -64,11 +64,45 @@ archapp.upload.handles = [];
 
 <script>
 $(function(){
-  $(".dropdown-menu > li > button").click(function() {
-    var language = this.value;
-    $("#language").val(language);
-    $("#lang-form").submit();
-  });
+  function change_lang () {
+    $(".dropdown-menu > li > button").click(function() {
+      var language = this.value;
+      $("#language").val(language);
+      $("#lang-form").submit();
+    });
+  };
+  function open_collapse(button_id, target_id) {
+    var id = "#" + target_id;
+    function add_collapse () {
+      if ($(window).width() <= 767) {
+        $(button_id).attr({
+          'href': id,
+          'role': 'button',
+          'data-toggle': 'collapse',
+          'aria-expanded': 'false',
+          'aria-controls': target_id,
+        });
+        $(id).removeClass('dropdown-menu').addClass('collapse');
+      };
+    };
+    $(window).on('resize', function(){
+      var win = $(this);
+      if (win.width() <= 767) {
+        add_collapse();
+      };
+      if (win.width() > 767) {
+        $(button_id).attr({
+          'href': "#",
+          'data-toggle': 'dropdown',
+        }).removeAttr('class aria-controls aria-expanded role');
+        $(id).removeClass('collapse').addClass('dropdown-menu').removeAttr('style');
+      };
+    });
+    add_collapse();
+  };
+  change_lang();
+  open_collapse('#profile', 'profile-menu');
+  open_collapse('#lang', 'lang-menu');
 });
 </script>
 
@@ -122,14 +156,14 @@ $(function(){
         </li>
         <li>
           <div class="dropdown nav-language">
-            <a href="#" data-toggle="dropdown">
+            <a id="lang" href="#" data-toggle="dropdown">
               {% for lang in langs %}
               {% if lang.code == LANGUAGE_CODE %}
               {{ lang.name_local }}
               {% endif %}
               {% endfor %}
             </a>
-            <ul class="dropdown-menu pull-right text-center" aria-labelledby="dLabel">
+            <ul id='lang-menu' class="dropdown-menu pull-right text-center" aria-labelledby="dLabel">
             {% get_language_info_list for LANGUAGES as langs %}
             {% for lang in langs %}
             <li {% if lang.code == LANGUAGE_CODE %} class="highlighted"{% endif %}><button value="{{ lang.code }}" class="btn btn-sm">{{ lang.name_local }}</button></li>
@@ -147,10 +181,10 @@ $(function(){
         </li>
         <li>
         <div class="dropdown">
-          <a href="#" data-toggle="dropdown">
+          <a id="profile" href="#" data-toggle="dropdown">
             <i class="fa fa-cog fa-2x"> </i>
           </a>
-          <ul class="dropdown-menu pull-right text-left" aria-labelledby="dLabel">
+          <ul id="profile-menu" class="dropdown-menu pull-right text-left" aria-labelledby="dLabel">
             <li>
             <a href = "{% url 'archapp:userprofile' user %}" class="btn btn-sm">{% trans "My Profile" %}</a>
             </li>

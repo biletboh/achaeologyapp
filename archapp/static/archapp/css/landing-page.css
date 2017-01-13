@@ -481,10 +481,6 @@ a:focus, a:active {
   color: black;
 }
 
-.navbar .navbar-nav > li > form > select:focus {
-  outline: 0;
-}
-
 .nav .dropdown-menu {
  background-color: rgba(12, 81, 108, 0.65);
  }
@@ -1625,15 +1621,55 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
       margin: 0px 3px;
       font-size: 13pt;
     }
+    .navbar-transparent .navbar-nav > li > .nav-language {
+      padding: 0;
+    }
+    #profile > i {
+      margin: 0;
+    }
     .nav .dropdown-menu > li > button {
       width:100%;
     }
-    .navbar-transparent .navbar-nav > li > .nav-language .dropdown-menu {
+    #lang-menu, #profile-menu {
       margin-top: 0;
+      padding: 0;
       background-color: rgba(12, 84, 108, 0.3);
     }
-    .open > .dropdown-menu {
-      transition: 2s ease-out;
+    #lang-menu > li > a, #profile-menu > li > button {
+      color: white;
+      border: none;
+      background-color: transparent;
+      width: 135px;
+    }
+    #lang-menu > li > button, #profile-menu > li > a {
+      display: block;
+      width: 100%;
+      background-color: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      border: none;
+      padding: 3px 20px;
+      margin: 0;
+      clear: both;
+      font-weight: normal;
+      line-height: 1.428;
+      white-space: nowrap;
+      overflow: none;
+    }
+    #lang-menu > li, #profile-menu > li {
+      list-style: none;
+    }
+    #lang-menu > li > button:hover, #profile-menu > li > a:hover {
+      background-color: rgba(52, 119, 144, 0.55);
+      color: white;
+    }
+    .highlighted {
+     background-color: rgba(52, 119, 144, 0.35);
+   } 
+   .work-page .navbar-transparent .navbar-nav > li > .nav-language {
+     padding: 0 !important;
+   }
+   .work-page #lang-menu, .work-page #profile-menu {
+     background-color: rgba(255, 255, 255, 0.075);
     }
     .logo-container {
       margin-top: 0;
@@ -1812,14 +1848,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
   background-color: #0C526C;
 }
 
-.work-page .navbar-brand {
-  padding-top: 0px;
-  padding-bottom: 0px;
+.work-page .navbar .navbar-brand {
+  padding: 5px 15px;
 }
 .work-page .logo-container {
-  margin-top: 5px;
+  margin-top: 0;
 }
-
 .work-page .navbar .navbar-nav > li > a, .work-page .navbar .navbar-nav > li > div > a, .work-page .navbar-transparent .navbar-nav > li > .dropdown > a {
   margin-top: 10px;
   margin-bottom: 10px;
