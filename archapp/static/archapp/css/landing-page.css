@@ -1604,6 +1604,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
 }
 
 @media (max-width:768px){
+<<<<<<< HEAD
   h3 {
     font-size: 18pt;
     margin: 10px 0 5px;
@@ -1845,10 +1846,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
   }
 }
 
-@media (min-width: 768px){
+@media (min-width: 768px) {
     .landing-page .navbar-top{
         padding-top: 10px;
     }
+}
+
+@media (min-width: 1600px) {
+  .navbar-top {
+    margin: 0 100px;
+  }
+  .work-page .navbar-top {
+    margin: 0;
+  }
 }
 
 /*work-page css*/
