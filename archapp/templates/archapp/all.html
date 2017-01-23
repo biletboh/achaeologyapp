@@ -9,7 +9,7 @@
 <div class="section section-gray nopadding-section">
   <div class="wrapper-left">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar hidden-xs">
       <div class="sidebar-wrapper">
         <form method="post" class="form-inline">
           {% csrf_token %}
@@ -42,24 +42,29 @@
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
-
+    <!--
+    <div class="fixed-plugin">
+      <input class="button" id="toggle" type="checkbox" data-toggle="toggle">
+      <i class="fa fa-2x fa-map-marker" aria-hidden="true"></i>
+    </div>
+-->
     <!-- Page Content -->
     <div class="main-panel">
-      <div class="container-fluid content">
-        <div class = "row">
-          <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-4 col-md-offset-4 col-sm-offset-4 text-center">
-            <h3 class="site_name">{% trans "All sites" %}</h3>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-4 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-            <div class="checkbox">
-              <label>
+      <div class="container-fluid content box">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="text-center custom-page-header">
+              <h3 class="site_name">{% trans "All sites" %}</h3>
+              <div class="toggle-button hidden-xs">
                 <input id="toggle" type="checkbox" data-toggle="toggle">
-                {% trans "Toggle map" %}
-              </label>
+                <label for="toggle">
+                  {% trans "Toggle map" %}
+                </label>
+              </div>
             </div>
           </div>
-
         </div>
+
         <hr class="hrr">
         <div class = "mapped">
           <div class="geo-map" id="map"></div>
@@ -68,87 +73,87 @@
           {% for site in object_list %}
           {% with site.image_set.all as imgs %}
           {% with site.props.all as prop %}
-          <div class="col-lg-4 col-md-6 col-sm-6 site-preview">
-            <div class="preview-box box">
-              <a href = "{% url 'archapp:sitepage' site.id %}">
-                <div class="col-lg-5 col-md-5 col-sm-5">
-                  <img src = "{{imgs|pick:'general,avatar'}}" />
-                </div>
-                <div class="col-lg-7 col-md-7 col-sm-7">
-                  <p class="text-left sitename">{{site.name}}</p>
-                  <p class="text-left">{{prop|lookup:"Area"}}</p>
-                  <p>{{prop|lookup:"DatingFrom, Dating"}} - {{prop|lookup:"DatingTo, Dating"}}</p>
-                </div>
-                <input type = "hidden" class = "lat" value = '{{prop|lookup:"Latitude"}}' />
-                <input type = "hidden" class = "lng" value = '{{prop|lookup:"Longtitude"}}' />
+          <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 site-preview">
+            <a href = "{% url 'archapp:sitepage' site.id %}">
+                <div class="row preview-box box">
+                  <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <img class="img-responsive" src="{{imgs|pick:'general,avatar'}}" />
+                  </div>
+                  <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                    <p class="text-left sitename">{{site.name}}</p>
+                    <p class="text-left">{{prop|lookup:"Area"}}</p>
+                    <p>{{prop|lookup:"DatingFrom, Dating"}} - {{prop|lookup:"DatingTo, Dating"}}</p>
+                  </div>
+                  <input type = "hidden" class = "lat" value = '{{prop|lookup:"Latitude"}}' />
+                  <input type = "hidden" class = "lng" value = '{{prop|lookup:"Longtitude"}}' />
 
-              </a>
-            </div>
+                </div>
+            </a>
           </div>
           {% endwith %}
           {% endwith %}
           {% empty %}
           <h4>{% trans "No results. Try another filter" %}</h4>
           {% endfor %}
-        </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <script>
 
 $(function() {
 
-  function redrawMap()
-  {
-      var center = archapp.map.handle.getCenter();
-      google.maps.event.trigger(map, 'resize');
-      archapp.map.handle.setCenter(center);
-  }
+    function redrawMap()
+    {
+    var center = archapp.map.handle.getCenter();
+    google.maps.event.trigger(map, 'resize');
+    archapp.map.handle.setCenter(center);
+    }
 
-  $("#menu-toggle").click(function(e)
-  {
+    $("#menu-toggle").click(function(e)
+      {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
       $("#wrapper").one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) { redrawMap(); });
-  });
+      });
 
-  var createMarkers = function()
-  {
+    var createMarkers = function()
+    {
     // delete old global marker
     archapp.map.marker.setMap(null);
 
     // create bunch of new ones
     $.each($('.listed .site-preview'), function(i, preview)
-    {
+        {
         // quickly fix css
         $(preview).find('.row').removeClass('row');
 
         var info = new google.maps.InfoWindow({ content: $(preview).html() });
         var mark = new google.maps.Marker({ position: { lat: parseFloat($(preview).find('.lat').val()), lng: parseFloat($(preview).find('.lng').val()) },
-                                         map: archapp.map.handle, title: $(preview).find('.sitename').text() });
+          map: archapp.map.handle, title: $(preview).find('.sitename').text() });
         mark.addListener('click', function() { info.open(archapp.map.handle, mark); });
         mark.setMap(archapp.map.handle);
-    });
-  }
+        });
+    }
 
 
-  $('#toggle').change(function() {
+$('#toggle, #toggle-map').change(function() {
     if( $(this).prop('checked') )
     {
-      $('.listed').hide();
-      $('.mapped').show();
-      redrawMap();
+    $('.listed').hide();
+    $('.mapped').show();
+    redrawMap();
     }
     else
     {
-      $('.listed').show();
-      $('.mapped').hide();
+    $('.listed').show();
+    $('.mapped').hide();
     }
-  });
+    });
 
-  archapp.map.callbacks.push(createMarkers);
+archapp.map.callbacks.push(createMarkers);
 
 });
 </script>

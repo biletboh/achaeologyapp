@@ -36,7 +36,13 @@ a:hover, a:focus {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
+.custom-page-header > h3 {
+  display: inline;
+}
+.custom-page-header > .toggle-button {
+  display: inline;
+  float: right;
+}
 .mapped {
   display: none;
 }
@@ -98,18 +104,7 @@ a:hover, a:focus {
 }
 
 /* Forms */ 
-@media (max-width: 767px) {
-  .form-custom {
-    height: 32px !important;
-    font-size: 12pt !important;
-    padding: 3px 12px;
-  }
-}
-@media (min-width:768px) {
-  .form-inline .form-control {
-    width: 100%;
-  }
-}
+
 .form-custom {
   height: 28px;
   font-size: 12px;
@@ -130,7 +125,7 @@ a:hover, a:focus {
   color: #a94442;
   list-style: none;
 }
-  
+
 /* Buttons */
 .btn-color {
   color: #6991AC;
@@ -154,32 +149,7 @@ a:hover, a:focus {
   margin-bottom: 15px;
 }
 
-@media (min-width:768px) {
-  .form-inline .form-control {
-    width: 100%;
-  }
-}
-@media (max-width : 1200px) {
-  .map-preview {
-    height: 250px;
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 15px;
-  }
 
-}
-@media (min-width : 1200px) {
-  .location {
-    margin-right: 15px;
-  }
-}
-
-@media (min-width: 1600px) {
-  .box .form-custom {
-    height: 36px;
-    font-size: 14pt;
-  }
-}
 
 /*Geolocation*/
 .geo-map {
@@ -198,23 +168,26 @@ a:hover, a:focus {
   margin-top: 5px;
 }
 .preview-box {
-  width: 90%;
   height: 120px;
   margin: 0px;
+  background-color: #F6FBFE;
 }
 .preview-box:hover {
-  background-color: #71A7BC;
+  background-color: #D5EAF3;
 }
-.preview-box > a {
+.listed a {
   color: #5E5E5E;
 }
-.preview-box > a:hover {
+.listed a:hover {
   color: black;
 }
 .landing-page .preview-box p {
-  margin-top: 0px;
-  font-size: 16px;
-  line-height: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 2px;
+  font-size: 12pt;
+  line-height: 20px;
 }
 /* ---Site page--- */
 .site-page .row {
@@ -644,4 +617,53 @@ hr {
 .work-page #language-menu {
   margin-top: 5px;
   background-color: rgba(12, 81, 108, 0.9);
+}
+
+/* Responsive design */
+@media (max-width: 767px) {
+  .form-custom {
+    height: 32px !important;
+    font-size: 12pt !important;
+    padding: 3px 12px;
+  }
+  .main-panel {
+    width: 100%;
+  }
+}
+@media (min-width:768px) {
+  .form-inline .form-control {
+    width: 100%;
+  }
+.landing-page .preview-box p {
+    font-size: 10pt;
+  }
+}
+
+@media (min-width : 992px) {
+}
+@media (max-width : 1200px) {
+  .map-preview {
+    height: 250px;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+}
+@media (min-width : 1200px) {
+  .location {
+    margin-right: 15px;
+  }
+.preview-box {
+    height: 120px;
+  }
+.landing-page .preview-box p {
+    font-size: 12pt;
+  }
+}
+
+@media (min-width: 1600px) {
+  .box .form-custom {
+    height: 36px;
+    font-size: 14pt;
+  }
 }
