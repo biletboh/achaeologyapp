@@ -7,6 +7,8 @@ from django.utils.translation import ugettext as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # all possible Property value types
 class ValueType(DjangoChoices):
@@ -91,11 +93,20 @@ class Image(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-    avatar = models.ImageField(upload_to='profile_images', blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, unique=True, primary_key=True, on_delete=models.CASCADE, related_name='user_profile')
+    avatar = ThumbnailerImageField(upload_to='profile_images', blank=True)
     country = models.CharField(max_length = 128)
     city = models.CharField(max_length = 128)
+    organization = models.CharField(max_length = 256)
 
     def __unicode__(self):
         return self.user.username
 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.user_profile.save()

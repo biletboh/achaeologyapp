@@ -15,6 +15,7 @@ from django.utils import translation
 from django.conf import settings
 from archapp.geo import GeoCoder
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 # TODO: look for proper django choices implementation
 def ValueTypeToString(value):
@@ -361,7 +362,7 @@ class UserDisplay(DetailView):
 class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     form_class = UserUpdateForm
     success_url = '/'
-    model = User 
+    model = User
     slug_field = "username"
 
     def post(self, request, *args, **kwargs):
@@ -370,10 +371,23 @@ class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     def form_valid(self, form):
         user = self.request.user
+        userprofile = user.user_profile 
         user.username = form.cleaned_data['username']
         user.email =  form.cleaned_data['email']
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
+        
+        country = form.cleaned_data['country']
+        city = form.cleaned_data['city']
+        organization = form.cleaned_data['organization']
+        avatar = form.cleaned_data['avatar']
+        if avatar: 
+            user.user_profile.avatar = avatar
+        userprofile.country = country
+        userprofile.city = city 
+        userprofile.organization = organization
+
+
        # password1 = form.cleaned_data["password1"]
        # password2 = form.cleaned_data["password2"]
        # if password1 and password2 and password1 != password2:

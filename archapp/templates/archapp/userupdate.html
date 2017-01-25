@@ -5,11 +5,14 @@
 {% block content %}
 
 <div class="section section-gray">
-  <div class="row text-center">
-    <h3 class="site_name">{% trans "Update User Information" %}</h3>
-  </div>
-  <div class="container">
-    <form action="" method="post">
+  <div class="container box">
+    <div class="row text-center custom-page-header">
+      <div class="col-md-12">
+        <h3 class="site-name">{% trans "Update User Information" %}</h3>
+      </div>
+    </div>
+
+    <form id="user-update-form" action="" method="post">
       {% csrf_token %}
       {% if messages %}
       <ul class="messages">
@@ -29,37 +32,30 @@
       <div class="tab-content">
         {% for fset in form.fieldsets %}
         <div role="tabpanel" class="tab-pane{% if forloop.first %} active{% endif %}" id="{{fset.legend}}">
-          <div class="row margin-top">
-            <div class="col-lg-4 col-md-5 col-sm-6 col-lg-offset-4 col-md-offset-3 col-sm-offset-2">
-              {% for field in fset %}
+          <div class="form-group-custom margin-top">
+            {% for field in fset %}
+            <div class="form-group-item">
               {% if not field.is_hidden %}
-              <div class="row form-group-custom">
-                {% else %}
-                <div class="row">
-                  {% endif %}
-                  {% if not field.is_hidden %}
-                  <div class = "col-lg-6 col-md-6 col-sm-6 text-right text-gr">{{field.label_tag}}</div>
-                  {% endif %}
-                  <div class = "col-lg-6 col-md-6 col-sm-6">
+              {{field.label_tag}}                    
+              {% endif %}
+              {% if fset.legend = "user_profile" %}
+              {% with user.user_profile|object_attributes:field as val %}
 
-                    {% with user|object_attributes:field as val %}
-                    {% render_field field class+="form-control form-custom" value=val %}
-                    {% endwith %}
-
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 text-danger text-center">
-                      {{ field.errors }}
-                    </div>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
+              {% render_field field class+="form-control form-custom" value=val %}
+              {% endwith %}
+              {% else %}
+              {% with user|object_attributes:field as val %}
+              {% render_field field class+="form-control form-custom" value=val %}
+              {% endwith %}
+              {% endif %}
+              {{ field.errors }}
             </div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-4 col-md-offset-4 col-sm-offset-4 text-center">
+        {% endfor %}
+        </div>
+        <div class="text-center">
           <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" />
         <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
       </div>
@@ -67,4 +63,11 @@
     </form>
   </div>
 </div>
+<script type="text/javascript">
+$(function() {
+    initUploadFields($('#user-update-form'));
+    });
+$("textarea").parents("div.form-group-custom").css({"max-width": "1024px"});
+</script>
+{% include 'upload_template.html' %}
 {% endblock %}

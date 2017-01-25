@@ -5,32 +5,99 @@
 {% load i18n %}
 {% with user.props.all as prop %}
 <div class="section section-gray">
-<div class="container">
+<div class="container box">
   <div class ="row">
     <div class="col-lg-3 col-md-3 col-sm-3 text-left">
       <div class="row">
         <div class="col-lg-12">
-          <img src = "" alt="avatar"/>
+          <img src = "{{user.user_profile.avatar.thumb.url}}" class="img-responsive" alt="{{user.user_profile.avatar.name}}"/>
         </div>
       </div>
 
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-          {{user}}
+          <ul class="list-unstyled profile">
+            <li class="user-name">{{user}}</li>
+            <li><i class="fa fa-user" aria-hidden="true"></i> 
+            {% if user.first_name %}
+            {{user.first_name}} 
+            {% else %}
+            <a href="{% url 'archapp:user-update' user %}">{% trans "add a first name"%}, </a>
+            {% endif %}
+            {% if user.last_name %}
+            {{user.last_name}}
+            {% else %}
+            <a href="{% url 'archapp:user-update' user %}">{% trans "add a last name"%}</a>
+            {% endif %}
+            </li>
+            <li><i class="fa fa-envelope" aria-hidden="true"></i> 
+                       {{user.email}}</li>
+            <li><i class="fa fa-map-marker" aria-hidden="true"></i>
+            {% if user.user_profile.city%}
+            {{user.user_profile.city}}, 
+            {% else %}
+            <a href="{% url 'archapp:user-update' user %}">{% trans "add a city"%}</a>, 
+            {% endif %}
+            {% if user.user_profile.country%}
+            {{user.user_profile.country}}
+            {% else %}
+            <a href="{% url 'archapp:user-update' user %}">{% trans "add a country"%}</a>
+            {% endif %}
+            </li>
+            <li><i class="fa fa-graduation-cap" aria-hidden="true"></i> 
+            {% if user.user_profile.organization %}
+            {{user.user_profile.organization}}
+            {% else %}
+            <a href="{% url 'archapp:user-update' user %}">{% trans "add an organization"%}</a> 
+            {% endif %}
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-          {{user.first_name}} {{user.last_name}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-          {{user.email}}
-        </div>
-      </div>
-
     </div>
+    <div class="col-lg-9 col-md-9 col-sm-9">
+      <div class="row custom-page-header">
+        <div class="col-md-12">
+          <h3 class="site-name">My projects </h3>
+          <a href="" class="btn btn-primary"><i class="fa fa-plus-square-o fa-2x" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <hr class="hrr">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
+          <div class="projects preview-box box">
+            <a href="{% url 'archapp:allsites' %}">Скіфські-пам’ятки</a>
+            <p class="text-muted">Скіфські пам’ятки Українського Лівобережжя (demo)</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
+          <div class="projects preview-box box">
+            <a href="#">Трипільскі-пам’ятки</a>
+            <p class="text-muted">Трипільські пам’ятки Київського Подніпров’я (demo)</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
+          <div class="projects preview-box box">
+            <a href="#">Антропоморф-пластика-тк</a>
+            <p class="text-muted">Антропоморфна пластика трипільської культури (demo)</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
+          <div class="projects preview-box box">
+            <a href="#">Палеолітичні-стоянки</a>
+            <p class="text-muted">Палеолітичні стоянки у м. Київ (demo)</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
+          <div class="projects preview-box box">
+            <a href="#">Тальянки</a>
+            <p class="text-muted">Тальянківське поселення трипільської культури (demo)</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 </div>

@@ -68,7 +68,7 @@ class SignUpForm(UserCreationForm):
             user.save()
         return user
 
-class UserUpdateForm(betterforms.BetterForm):
+class UserUpdateForm(FileFormMixin, betterforms.BetterForm):
     username = forms.CharField(required=False) 
     email = forms.EmailField(required=False)
     first_name = forms.CharField(required=False) 
@@ -77,9 +77,18 @@ class UserUpdateForm(betterforms.BetterForm):
     password1 = forms.CharField(required=False, label="New Password", widget=forms.PasswordInput()) 
     password2 = forms.CharField(required=False, label="Confirm New Password", widget=forms.PasswordInput()) 
 
+    country = forms.CharField(required=False) 
+    city = forms.CharField(required=False)
+    organization = forms.CharField(required=False, label="Research oragnization (University)")
+    avatar = UploadedFileField(label=_("Profile image"), required = False)
+    form_id = forms.CharField(widget = forms.HiddenInput(), required = False)
+    upload_url = forms.CharField(widget = forms.HiddenInput(), required = False)
+    delete_url = forms.CharField(widget = forms.HiddenInput(), required = False)
+
     class Meta:
-        fieldsets = [('1', {'description': _('User profile'), 'legend': 'main_info', 'fields': ['username', 'email', 'first_name', 'last_name'], }),
-                ('2', {'description': _('Password management'), 'legend': 'update_password', 'fields': ['old_password', 'password1', 'password2'], })]
+        fieldsets = [('1', {'description': _('Main Info'), 'legend': 'main_info', 'fields': ['username', 'email', 'first_name', 'last_name'], }),
+                ('2', {'description': _('Password management'), 'legend': 'update_password', 'fields': ['old_password', 'password1', 'password2'], }),
+                ('3', {'description': _('User Profile'), 'legend': 'user_profile', 'fields': ['country', 'city', 'organization', 'avatar', 'form_id', 'upload_url', 'delete_url'], })]
 
 
 class ListSearchForm(FilterForm):
