@@ -41,15 +41,15 @@ msgstr "Датування не визначено"
 
 #: archapp/models.py:66
 msgid "No translation available"
-msgstr ""
+msgstr "Переклад відсутній"
 
 #: archapp/templates/404.html:12 archapp/templates/archapp/error.html.py:12
 msgid "Page not found"
-msgstr ""
+msgstr "Сторінку не знайдено"
 
 #: archapp/templates/404.html:13 archapp/templates/archapp/error.html.py:13
 msgid "The content you requested can not be found"
-msgstr ""
+msgstr "Контент відсутній"
 
 #: archapp/templates/archapp/all.html:12 archapp/templates/archapp/all.html:120
 msgid "Filters"
@@ -162,8 +162,6 @@ msgid "AreaHeight"
 msgstr "Довжина"
 
 #: archapp/templates/archapp/site.html:72
-#, fuzzy
-#| msgid "Calculated area"
 msgid "Calculated Area"
 msgstr "Порахована площа"
 
@@ -188,7 +186,6 @@ msgid "Dating"
 msgstr "Датування"
 
 #: archapp/templates/archapp/site.html:125
-#, fuzzy
 msgid "Bibliography"
 msgstr "Література"
 
@@ -198,7 +195,13 @@ msgstr "Ви дійсно хочете видалити"
 
 #: archapp/templates/archapp/welcome.html:8
 msgid "Welcome to the archaeology database!"
-msgstr "Вітаємо вас у базі даних археологічних пам’яток!"
+msgstr "Вітаємо у базі археологічних даних!"
+
+
+#: archapp/templates/archapp/welcome.html:10
+msgid "Create your own handy catalog of archaeological sites and share it with the world. The database contains awesome filters and Google Maps functionality that make your work with archaeological data convenient and comprehensive."
+msgstr "Створіть зручний каталог археологічних пам’яток та поділіться ним зі світом. У базі даних ви знайдете круті фільтри та функціонал Google Maps, які дозволять повноцінно та легко опрацьовувати археологічні дані."
+
 
 # filters next
 
