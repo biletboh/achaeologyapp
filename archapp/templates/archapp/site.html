@@ -9,168 +9,166 @@
 {% with site.props.all as prop %}
 
 <div class="section section-gray site-page">
-  <div class = "row">
-    <div class="col-lg-10 col-md-10 col-sm-10 text-center">
-      <h3 class="site-name">{{site.name}} </h3>
-    </div>
-
-    <div class="col-lg-1 col-md-1 col-sm-1">
-      <a href = "{% url 'archapp:editsite' site.id %}" class="btn btn-primary btn-sm btn-postion">{% trans "Edit" %}</a>
-    </div>
-    <div class="col-lg-1 col-md-1 col-sm-1">
-      <a href = "{% url 'archapp:deletesite' site.id %}" class="btn textcol btn-primary btn-sm">{% trans "Delete" %}</a>
-    </div>
-  </div>
-  <div class="row margin-top">
-    <div class="col-lg-3 col-md-12">
-      <div class="row hidden-md hidden-sm">
-        <div class="col-lg-12">
-          <img src = "{{imgs|pick:'general,small'}}" />
+  <div class="container-fluid box">
+    <div class = "row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="custom-page-header text-center">
+        <h3 class="site-name">{{site.name}} </h3>
+        <div class="edit-buttons">
+          <a href = "{% url 'archapp:editsite' site.id %}" class="btn btn-primary btn-sm btn-postion">{% trans "Edit" %}</a>
+          <a href = "{% url 'archapp:deletesite' site.id %}" class="btn textcol btn-primary btn-sm">{% trans "Delete" %}</a>
         </div>
       </div>
-      <div class="row">
-        <div class="col-lg-12 col-md-9 col-sm-9">
-          <input id="lat" type="hidden" value='{{ prop|lookup:"latitude" }}' />
-          <input id="lon" type="hidden" value='{{ prop|lookup:"longtitude" }}' />
-          <div class="map-preview" id="map"></div>
-        </div>
-        <div class="col-lg-12 col-md-3 col-sm-3">
-          <div class="row box location">
-            <div class="col-md-3 col-sm-2">
-              <i class="fa fa-map-marker fa-3x hidden-sm" aria-hidden="true"></i>
-
-              <i class="fa fa-binoculars fa-2x visible-sm-block" aria-hidden="true"></i>
-            </div>
-            <div class="col-md-9 col-sm-10">
-              <p>{{prop|lookup:"settlement"}}</p>
-              <p>{{prop|lookup:"district"}}</p>
-              <p>{{prop|lookup:"region"}}</p>
-              <p>{{prop|lookup:"country"}}</p>
-            </div>
+    </div>
+    <div class="row margin-top">
+      <div class="col-lg-3 col-md-12">
+        <div class="row hidden-md hidden-sm">
+          <div class="col-lg-12">
+            <img src = "{{imgs|pick:'general,small'}}" />
           </div>
         </div>
-      </div>
-    </div>
-    <div class="col-lg-9 col-md-12">
-      <div class="gallery">
         <div class="row">
-          {% with imgs|pick_mult_types:'photo,plane,found' as gallery %}
-          {% if gallery|length %}
-          <div class="carousel slide multi-item-carousel gallery-box" id="theCarousel">
-            <div class="carousel-inner">
-              {% for img in gallery %}
-              <div class="item {% if forloop.first %} active{% endif %}">
-                <div class="col-xs-4">
-                  <a href="{{ img|pick_size:'large' }}" data-toggle="lightbox" data-gallery="photos">
-                    <img src = "{{ img|pick_size:'thumb' }}" class="img-thumbnail"/>
-                  </a>
+          <div class="col-lg-12 col-md-9 col-sm-9">
+            <input id="lat" type="hidden" value='{{ prop|lookup:"latitude" }}' />
+            <input id="lon" type="hidden" value='{{ prop|lookup:"longtitude" }}' />
+            <div class="map-preview" id="map"></div>
+          </div>
+          <div class="col-lg-12 col-md-3 col-sm-3">
+            <ul class="list-inline location">
+              <li>
+                <i class="fa fa-map-marker fa-3x" aria-hidden="true"></i>
+
+                </li>
+                <li>
+                <p>{{prop|lookup:"settlement"}}</p>
+                <p>{{prop|lookup:"district"}}</p>
+                <p>{{prop|lookup:"region"}}</p>
+                <p>{{prop|lookup:"country"}}</p>
+                </li>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9 col-md-12">
+        <div class="gallery">
+          <div class="row">
+            {% with imgs|pick_mult_types:'photo,plane,found' as gallery %}
+            {% if gallery|length %}
+            <div class="carousel slide multi-item-carousel gallery-box" id="theCarousel">
+              <div class="carousel-inner">
+                {% for img in gallery %}
+                <div class="item {% if forloop.first %} active{% endif %}">
+                  <div class="col-xs-4">
+                    <a href="{{ img|pick_size:'large' }}" data-toggle="lightbox" data-gallery="photos">
+                      <img src = "{{ img|pick_size:'thumb' }}" class="img-thumbnail"/>
+                    </a>
+                  </div>
                 </div>
+                {% endfor %}
               </div>
-              {% endfor %}
+              <a class="left carousel-control control-left-radius" href="#theCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+              <a class="right carousel-control control-right-radius" href="#theCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
             </div>
-            <a class="left carousel-control control-left-radius" href="#theCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
-            <a class="right carousel-control control-right-radius" href="#theCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
-          </div>
-          {% endif %}
-          {% endwith %}
-        </div>
-      </div>
-      <div class="row box">
-        <div class="col-md-6 col-sm-6">
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted">{% trans "Area" %} </p>
-            </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"Area"}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted">{% trans "AreaWidth" %} </p>
-            </div>
-            <div class="col-lg-5 col-md-4 col-sm-7">
-              <p>{{prop|lookup:"AreaWidth"}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted">{% trans "AreaHeight" %} </p>
-            </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"AreaHeight"}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted">{% trans "Calculated Area" %} </p>
-            </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              {% with prop|lookup:"AreaWidth" as aw %}
-              {% with prop|lookup:"AreaHeight" as ah %} 
-              <p>{{ aw|mul:ah }}</p>
-              {%endwith%}
-              {%endwith%}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted">{% trans "RiverSystem" %} </p>
-            </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"RiverSystem"}}</p>
-            </div>
+            {% endif %}
+            {% endwith %}
           </div>
         </div>
-        <div class="col-md-6 col-sm-6">
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted"> {% trans "Topography" %} </p>
+        <div class="row box">
+          <div class="col-md-6 col-sm-6">
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted">{% trans "Area" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"Area"}}</p>
+              </div>
             </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"Topography"}}</p>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted">{% trans "AreaWidth" %} </p>
+              </div>
+              <div class="col-lg-5 col-md-4 col-sm-7">
+                <p>{{prop|lookup:"AreaWidth"}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted">{% trans "AreaHeight" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"AreaHeight"}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted">{% trans "Calculated Area" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                {% with prop|lookup:"AreaWidth" as aw %}
+                {% with prop|lookup:"AreaHeight" as ah %} 
+                <p>{{ aw|mul:ah }}</p>
+                {%endwith%}
+                {%endwith%}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted">{% trans "RiverSystem" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"RiverSystem"}}</p>
+              </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted"> {% trans "Geomorphology" %} </p>
+          <div class="col-md-6 col-sm-6">
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted"> {% trans "Topography" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"Topography"}}</p>
+              </div>
             </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"Geomorphology"}}</p>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted"> {% trans "Geomorphology" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"Geomorphology"}}</p>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted"> {% trans "Altitude" %} </p>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted"> {% trans "Altitude" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"Altitude"}}</p>
+              </div>
             </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"Altitude"}}</p>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted"> {% trans "ValleyAltitude" %} </p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"ValleyAltitude"}}</p>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted"> {% trans "ValleyAltitude" %} </p>
-            </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"ValleyAltitude"}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-5 col-md-4 col-sm-5">
-              <p class="text-muted"> {% trans "Dating" %}</p>
-            </div>
-            <div class="col-lg-7 col-md-8 col-sm-7">
-              <p>{{prop|lookup:"DatingFrom, Dating"}} - {{prop|lookup:"DatingTo, Dating"}}</p>
+            <div class="row">
+              <div class="col-lg-5 col-md-4 col-sm-5">
+                <p class="text-muted"> {% trans "Dating" %}</p>
+              </div>
+              <div class="col-lg-7 col-md-8 col-sm-7">
+                <p>{{prop|lookup:"DatingFrom, Dating"}} - {{prop|lookup:"DatingTo, Dating"}}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row box">
-        <div class="col-md-12 text-center">
-          <p class="text-muted"> {% trans "Bibliography" %} </p>
-        </div>
-        <div class="col-md-12 bibliography">
-          <p>{{site.data.Bibliography}}</p>
+        <div class="row box">
+          <div class="col-md-12 text-center">
+            <p class="text-muted"> {% trans "Bibliography" %} </p>
+          </div>
+          <div class="col-md-12 bibliography">
+            <p>{{site.data.Bibliography}}</p>
+          </div>
         </div>
       </div>
     </div>

@@ -7,135 +7,105 @@
 {% with site.image_set.all as imgs %}
 {% with site.props.all as prop %}
 {% block content %}
+
 <div class="section section-gray">
-<div class="row text-center">
-  <h3 class="site_name">Редагувати {{site.name}}</h3>
-</div>
-<div class="container">
-  <form id="editsiteform" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% render_field form.site_id type="hidden" value=site.id %}
-    {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    <ul class="nav nav-tabs" role="tablist">
-      {% for fset in form.fieldsets %}
-      <li role = "presentation"{% if forloop.first %} class="active"{% endif %}>
-      <a href = "#{{ fset.legend }}" role = "tab" data-toggle = "tab">{{ fset.description }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-    <div class="tab-content">
-      {% for fset in form.fieldsets %}
-      <div role="tabpanel" class="tab-pane{% if forloop.first %} active{% endif %}" id="{{fset.legend}}">
-        <div class="row margin-top">
-          {% if fset.legend == "mediatab" %}
-          <div class="gallery">
-            <div class="row">
-              <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-                {% with site.image_set.all|pick_mult_types:'general,photo,plane,found' as gallery %}
-                <h3>{% trans "Delete Images" %} </h3>
-                {{form.delete_pics|attr:"hidden"}}
-                {% if gallery|length %}
-                <div class = "delete_checkboxes">
-                  {% for img in gallery %}
-                  <div class="col-lg-4 col-md-4 col-sm-4">
-                    <div class="checkbox">
-                      <input type="checkbox" name="img{{img.id}}" value="{{img.id}}">
+  <div class="container box">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="custom-page-header text-center">
+          <h3 class="site_name text-center">Редагувати {{site.name}}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <form id="editsiteform" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% render_field form.site_id type="hidden" value=site.id %}
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          <ul class="nav nav-tabs" role="tablist">
+            {% for fset in form.fieldsets %}
+            <li role = "presentation"{% if forloop.first %} class="active"{% endif %}>
+            <a href = "#{{ fset.legend }}" role = "tab" data-toggle = "tab">{{ fset.description }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+          <div class="tab-content">
+            {% for fset in form.fieldsets %}
+            <div role="tabpanel" class="tab-pane{% if forloop.first %} active{% endif %}" id="{{fset.legend}}">
+              <div class="form-group-custom margin-top">
+                {% if fset.legend == "mediatab" %}
+                <div class="gallery">
+                  {% with site.image_set.all|pick_mult_types:'general,photo,plane,found' as gallery %}
+                  <h3>{% trans "Delete Images" %} </h3>
+                  {{form.delete_pics|attr:"hidden"}}
+                  {% if gallery|length %}
+                  <div class = "delete_checkboxes">
+                    <div class="row">
+                      {% for img in gallery %}
+                      <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="checkbox">
+                          <input type="checkbox" name="img{{img.id}}" value="{{img.id}}">
+                        </div>
+                        <img src = "{{ img|pick_size:'thumb' }}" class="img-thumbnail"/>
+                      </div>
+                      {% endfor %}
                     </div>
-                    <img src = "{{ img|pick_size:'thumb' }}" class="img-thumbnail"/>
                   </div>
-                  {% endfor %}
+                  {% endif %}
+                  {% endwith %}
+                </div>
+
+                <div class="form-group-item">
+                  <h3>Upload New Images</h3>
                 </div>
                 {% endif %}
-                {% endwith %}
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-              <h3>Upload New Images</h3>
-            </div>
-          </div>
-          {% endif %}
-          {% if fset.legend == "refstab" %}
-          <div class="col-lg-8 col-md-8 col-sm-10 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
-            {% else %}
-            <div class="col-lg-4 col-md-5 col-sm-6 col-lg-offset-4 col-md-offset-3 col-sm-offset-2">
-              {% endif %}
-              {% for field in fset %}
-              {% if not field.is_hidden %}
-              <div class="row form-group-custom">
-                {% else %}
-                <div class="row">
-                  {% endif %}
+                {% for field in fset %}
+                <div class="form-group-item">
                   {% if not field.is_hidden %}
-                  <div class = "col-lg-6 col-md-6 col-sm-6 text-right text-gr">{{field.label_tag}}</div>
+                  {{field.label_tag}}                    
                   {% endif %}
-                  {% if field.name == "literature" %}
-                  <div class = "col-lg-12 col-md-12 col-sm-12">
-                    {% else %}
-                    <div class = "col-lg-6 col-md-6 col-sm-6">
-                      {% endif %}
-                      {% with site.props.all|lookup:field.name as val %}
-                      {% with 'riversystem topography geomorphology' as cho %}
-                      {% if field.name = "name" %}
-                      {% render_field field class+="form-control form-custom" value=site.name %}
-                      {% elif field.name = "literature" %}
+                  {% with site.props.all|lookup:field.name as val %}
+                  {% with 'riversystem topography geomorphology' as cho %}
+                  {% if field.name = "name" %}
+                  {% render_field field class+="form-control form-custom" value=site.name %}
+                  {% elif field.name = "literature" %}
 
-                      {% with site.data.Bibliography as lit %}
-                      {% render_field field|default_textarea:lit class+="form-control form-custom" %}
-                      {% endwith %}
-                      {% elif field.name in cho.split %}
-                      {% render_field field|default_choice:val class+="form-control form-custom"%}
-                      {% else %}
-                      {% render_field field class+="form-control form-custom" value=val %}
-                      {% endif %}
-                      {% endwith %}
-                      {% endwith %}
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 text-danger text-center">
-                        {{ field.errors }}
-                      </div>
-                    </div>
-                  </div>
-                  {% endfor %}
+                  {% with site.data.Bibliography as lit %}
+                  {% render_field field|default_textarea:lit class+="form-control form-custom" %}
+                  {% endwith %}
+                  {% elif field.name in cho.split %}
+                  {% render_field field|default_choice:val class+="form-control form-custom"%}
+                  {% else %}
+                  {% render_field field class+="form-control form-custom" value=val %}
+                  {% endif %}
+                  {% endwith %}
+                  {% endwith %}
+                  {{ field.errors }}
                 </div>
+                {% endfor %}
               </div>
               {% if forloop.first %}
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                    <h3>{% trans "Click on the map to pick location" %}</h3>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
-                    <div class="geo-map" value='{{ site.props.all|lookup:"latitude"}},{{site.props.all|lookup:"longtitude"}}' id="map"></div>
-                  </div>
-                </div>
-              </div>
+              <h3 class="text-center">{% trans "Click on the map to pick location" %}</h3>
+              <div class="geo-map" value='{{ site.props.all|lookup:"latitude"}},{{site.props.all|lookup:"longtitude"}}' id="map"></div>
               {% endif %}
             </div>
             {% endfor %}
           </div>
-          <div class="row mbottom">
-            <div id='testinput'></div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-4 col-md-offset-4 col-sm-offset-4 text-center">
-              <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" class="btn btn-border-color textcol btn-sm background" />
-              <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
-            </div>
+          <div class="text-center">
+            <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" class="btn btn-border-color textcol btn-sm background" />
+            <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
           </div>
-        </div>
+        </form>
       </div>
     </div>
-  </form>
-</div>
+  </div>
 </div>
 <script type="text/javascript">
 $(function() {
@@ -146,6 +116,7 @@ $(function() {
 
 $(document).ready(function(){
 
+    $("textarea").parents("div.form-group-custom").css({"max-width": "1024px"});
     // this data is only needed before form submit
     $('#editsiteform').submit(function() {
       // obtain joined list of all needed values

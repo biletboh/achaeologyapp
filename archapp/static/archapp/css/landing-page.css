@@ -796,11 +796,11 @@ a:focus, a:active {
   top: 0;
 }
 
-.landing-page ol{
+.landing-page ol {
   font-weight: 300;
 }
 
-.landing-page .section p{
+.landing-page .section p {
   margin-top: 30px;
   line-height: 28px;
   font-size: 18px;
@@ -1827,6 +1827,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
   .landing-page .parallax .description h2 {
     font-size: 24pt;
   }
+
+.landing-page .section p {
+  font-size: 10pt;
+  line-height: 18px;
+}
+.work-page .section p {
+  margin-top: 0;
+}
   .landing-page .footer {
     padding: 5px;
   }

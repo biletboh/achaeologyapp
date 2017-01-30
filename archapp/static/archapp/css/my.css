@@ -36,19 +36,19 @@ a:hover, a:focus {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.cutom-page-header {
-  margin-bottom: 5px;
+.custom-page-header {
+  margin-bottom: 10px;
 }
 .custom-page-header h3 {
   display: inline;
 }
-.custom-page-header > .toggle-button, .custom-page-header a {
+.custom-page-header > .toggle-button, .custom-page-header a, .custom-page-header .edit-buttons {
   display: inline;
   float: right;
 }
-
 .custom-page-header .btn {
   padding: 3px 10px;
+  margin: 0 5px;
 }
 .mapped {
   display: none;
@@ -645,6 +645,11 @@ hr {
   font-weight: 500;
   padding: 5px 0;
 }
+
+.location > li {
+  vertical-align: top;
+}
+
 /* Responsive design */
 @media (max-width: 767px) {
   .form-custom {
@@ -676,9 +681,6 @@ hr {
   }
 }
 @media (min-width : 1200px) {
-  .location {
-    margin-right: 15px;
-  }
 .preview-box {
     height: 120px;
   }

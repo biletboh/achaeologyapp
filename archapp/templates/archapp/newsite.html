@@ -32,9 +32,6 @@
               {% if not field.is_hidden %}
               {{field.label_tag}}                    
               {% endif %}
-              {% if field.name = "literature" %}
-              {% else %}
-              {% endif %}
               {{ field|attr:"class:form-control form-custom"}}
               {{ field.errors }}
             </div>
@@ -57,8 +54,9 @@
 <script type="text/javascript">
 $(function() {
     initUploadFields($('#newsiteform'));
+
+    $("textarea").parents("div.form-group-custom").css({"max-width": "1024px"});
     });
-$("textarea").parents("div.form-group-custom").css({"max-width": "1024px"});
 </script>
 {% include 'upload_template.html' %}
 {% endblock %}

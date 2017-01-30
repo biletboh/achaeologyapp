@@ -35,7 +35,6 @@
                 }
             });
 
-            z.addClass('col-md-2 col-md-offset-6');
             d.hide();
             d.after(l);
             l.after(z);
