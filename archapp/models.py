@@ -82,6 +82,17 @@ class Site(models.Model):
     def __str__(self):
         return self.name
 
+# archaeology Project
+class Project(models.Model):
+    name = models.CharField(max_length = 128)
+    description = models.CharField(max_length = 256)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    filters = models.ManyToManyField(Filter)
+    
+    def __str__(self):
+        return self.name
+
+
 # Site photos
 class Image(models.Model):
     site = models.ForeignKey(Site, on_delete = models.CASCADE)
