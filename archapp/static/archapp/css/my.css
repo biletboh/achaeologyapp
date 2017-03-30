@@ -42,7 +42,7 @@ a:hover, a:focus {
 .custom-page-header h3 {
   display: inline;
 }
-.custom-page-header > .toggle-button, .custom-page-header a, .custom-page-header .edit-buttons {
+.custom-page-header > .toggle-button, .custom-page-header a, .custom-page-header button, .custom-page-header .edit-buttons {
   display: inline;
   float: right;
 }

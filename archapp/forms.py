@@ -142,3 +142,6 @@ class EditSiteForm(NewSiteForm):
         self.fields['site_id'] = forms.IntegerField()
         self.fields['delete_pics'] = forms.CharField(required = False)
 
+class ProjectForm(forms.Form):
+    name = forms.CharField(label=_('Project name'), max_length=128)
+    description = forms.CharField(label=_('Description'), max_length=256)

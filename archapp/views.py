@@ -1,6 +1,6 @@
-from archapp.models import Site, Filter, Image, Property, ValueType, ImageType, UserProfile
+from archapp.models import Site, Filter, Image, Property, ValueType, ImageType, UserProfile, Project
 from django.views.generic import View, DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
-from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ListSearchForm, EditSiteForm
+from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ListSearchForm, EditSiteForm, ProjectForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -346,6 +346,7 @@ class UserProfile(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(UserProfile, self).get_context_data(**kwargs)
         context['title'] = "User Profile"
+        context['form'] = ProjectForm()
         return context
 
 class UserDisplay(DetailView):
@@ -415,3 +416,25 @@ class UserDelete(LoginRequiredMixin, DeleteView):
     model = User
     slug_field = "username"
     success_url = '/signup/'
+
+
+class CreateProject(LoginRequiredMixin, FormView):
+    form_class = ProjectForm 
+    success_url = '/'
+    model = Project
+
+    def form_valid(self, form):
+        project = Project(name=form.cleaned_data['name'], description = form.cleaned_data['description'], user = self.request.user)
+        project.save()
+        return super(CreateProject, self).form_valid(form)
+
+class UserProfileAndCreateProject(View):
+
+    def get(self, request, *args, **kwargs):
+        view = UserProfile.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = CreateProject.as_view()
+        return view(request, *args, **kwargs)
+
