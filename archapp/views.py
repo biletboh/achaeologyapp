@@ -1,6 +1,6 @@
 from archapp.models import Site, Filter, Image, Property, ValueType, ImageType, UserProfile, Project
 from django.views.generic import View, DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
-from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ListSearchForm, EditSiteForm, ProjectForm
+from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ListSearchForm, EditSiteForm, ProjectForm, CreateFilterForm#, CreateFilterFormSet
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -9,6 +9,7 @@ from django.template import Context, loader
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormMixin
 from django.views.generic.detail import SingleObjectMixin
+from django.forms import ValidationError
 from hvad.utils import get_translation_aware_manager
 from django.core.urlresolvers import reverse
 from django.utils import translation
@@ -16,6 +17,8 @@ from django.conf import settings
 from archapp.geo import GeoCoder
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_lazy as _
 
 # TODO: look for proper django choices implementation
 def ValueTypeToString(value):
@@ -325,7 +328,7 @@ class WelcomePage(TemplateView):
 class SignUp(FormView):
     form_class = SignUpForm
     template_name = 'archapp/signup.html'
-    success_url='/'
+
     def form_valid(self, form):
         form.save()
         username = self.request.POST['username']
@@ -333,38 +336,47 @@ class SignUp(FormView):
         user = authenticate(username=username, password=password)
         login(self.request, user)
         return super(SignUp, self).form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super(SignUp, self).get_context_data(**kwargs)
-        context['title'] = "Register"
+        context['title'] = 'Register'
         return context
+
+    def get_success_url(self):
+        user = self.request.user
+        return reverse('archapp:userprofile', 
+                kwargs={'slug': slugify(user.username)})
 
 
 class UserProfile(LoginRequiredMixin, DetailView):
     template_name = 'archapp/userprofile.html'
     model = User
-    slug_field = "username"
+    slug_field = 'username'
+
     def get_context_data(self, **kwargs):
         context = super(UserProfile, self).get_context_data(**kwargs)
         context['title'] = "User Profile"
         context['form'] = ProjectForm()
         return context
 
-class UserDisplay(DetailView):
+
+class UserDisplay(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'archapp/userupdate.html'
-    slug_field = "username"
+    slug_field = 'username'
 
     def get_context_data(self, **kwargs):
         context = super(UserDisplay, self).get_context_data(**kwargs)
         context['form'] = UserUpdateForm() 
         context['title'] = "Edit Profile"
         return context
- 
+
+
 class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     form_class = UserUpdateForm
     success_url = '/'
     model = User
-    slug_field = "username"
+    slug_field = 'username'
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -377,11 +389,11 @@ class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         user.email =  form.cleaned_data['email']
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
-        
         country = form.cleaned_data['country']
         city = form.cleaned_data['city']
         organization = form.cleaned_data['organization']
         avatar = form.cleaned_data['avatar']
+
         if avatar: 
             user.user_profile.avatar = avatar
         userprofile.country = country
@@ -400,7 +412,7 @@ class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     def get_success_url(self):
         user = self.request.user
-        return reverse("archapp:userprofile", kwargs = {'slug': user.username})
+        return reverse("archapp:userprofile", kwargs = {'slug': slugify(user.username)})
 
 class UserUpdate(View):
 
@@ -420,13 +432,12 @@ class UserDelete(LoginRequiredMixin, DeleteView):
 
 class CreateProject(LoginRequiredMixin, FormView):
     form_class = ProjectForm 
-    success_url = '/'
     model = Project
 
     def form_valid(self, form):
-        project = Project(name=form.cleaned_data['name'], description = form.cleaned_data['description'], user = self.request.user)
-        project.save()
-        return super(CreateProject, self).form_valid(form)
+        user = self.request.user
+        project = user.project_set.create(name=form.cleaned_data['name'], description = form.cleaned_data['description'])
+        return HttpResponseRedirect(reverse('archapp:manage-project', kwargs={'slug': self.kwargs['slug'], 'pk': project.pk}))
 
 class UserProfileAndCreateProject(View):
 
@@ -436,5 +447,55 @@ class UserProfileAndCreateProject(View):
 
     def post(self, request, *args, **kwargs):
         view = CreateProject.as_view()
+        return view(request, *args, **kwargs)
+
+
+class ManageProject(LoginRequiredMixin, DetailView):
+    model = Project 
+    template_name = 'archapp/project.html'
+    slug_field = 'name'
+
+    def get_context_data(self, **kwargs):
+        context = super(ManageProject, self).get_context_data(**kwargs)
+        context['form'] = CreateFilterForm() 
+#        context['formset'] = CreateFilterFormSet()
+        context['title'] = "Manage a Project"
+        return context
+
+class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
+    template_name = 'archapp/project.html'
+    form_class = CreateFilterForm
+    model = Project
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(AddFilters, self).post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse(
+            'archapp:manage-project',
+            kwargs={'slug': self.kwargs['slug'], 
+            'pk': self.object.pk})
+
+    def form_valid(self, form):
+        project = self.object
+        print(form.cleaned_data['basic'])
+        new_filter, created = Filter.objects.get_or_create(
+            name=form.cleaned_data['name'],
+            basic=form.cleaned_data['basic'],
+            oftype=form.cleaned_data['oftype'],
+            project=project,
+            )
+
+        return super(AddFilters, self).form_valid(form)
+
+class ManageProjectFilters(View):
+
+    def get(self, request, *args, **kwargs):
+        view = ManageProject.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = AddFilters.as_view()
         return view(request, *args, **kwargs)
 

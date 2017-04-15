@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from form_utils import forms as betterforms
+from django.forms import formset_factory
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_file_form.forms import FileFormMixin, UploadedFileField, MultipleUploadedFileField
-
 
 
 class FilterForm(betterforms.BetterForm):
@@ -55,6 +55,7 @@ class FilterForm(betterforms.BetterForm):
     def getsubdata(self, obj):
         return obj.subfilters.all().exclude(pk = models.F('parent'))
 
+
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)
     class Meta:
@@ -90,7 +91,6 @@ class UserUpdateForm(FileFormMixin, betterforms.BetterForm):
                 ('2', {'description': _('Password management'), 'legend': 'update_password', 'fields': ['old_password', 'password1', 'password2'], }),
                 ('3', {'description': _('User Profile'), 'legend': 'user_profile', 'fields': ['country', 'city', 'organization', 'avatar', 'form_id', 'upload_url', 'delete_url'], })]
 
-
 class ListSearchForm(FilterForm):
     class Meta:
         fieldsets = [('0', {'description': _('Filters'), 'fields': ['name']}),
@@ -103,13 +103,13 @@ class ListSearchForm(FilterForm):
         self.fields['name'] = forms.CharField(max_length = 128, label = _('Name'))
         self.create_filter_fields()
 
+
 class SearchForm(FilterForm):
 
     def __init__(self, *args, **kwargs):
         super(SearchForm, self).__init__(*args, **kwargs)
 
         self.create_filter_fields()
-
 
 
 class NewSiteForm(FileFormMixin, FilterForm):
@@ -135,6 +135,7 @@ class NewSiteForm(FileFormMixin, FilterForm):
                 field = MultipleUploadedFileField(required = False, label = _(choice))
             self.fields[choice.lower()] = field
 
+
 class EditSiteForm(NewSiteForm):
 
     def __init__(self, *args, **kwargs):
@@ -142,6 +143,23 @@ class EditSiteForm(NewSiteForm):
         self.fields['site_id'] = forms.IntegerField()
         self.fields['delete_pics'] = forms.CharField(required = False)
 
+
 class ProjectForm(forms.Form):
     name = forms.CharField(label=_('Project name'), max_length=128)
     description = forms.CharField(label=_('Description'), max_length=256)
+
+
+class CreateFilterForm(betterforms.BetterForm):
+    
+    name = forms.CharField(required=True) 
+    oftype = forms.IntegerField(
+            widget=forms.Select(choices=ValueType.choices))
+    basic = forms.BooleanField(
+        widget=forms.widgets.HiddenInput(),
+        required=False)
+
+    class Meta:
+        fieldsets = [('1', {'description': _('Create Filters'), 'legend': 'create_filters', 'fields': ['name', 'oftype', 'basic'], })]
+
+
+#CreateFilterFormSet = formset_factory(CreateFilterForm, extra=2,)

@@ -72,12 +72,14 @@
             <p class="text-muted">Скіфські пам’ятки Українського Лівобережжя (demo)</p>
           </div>
         </div>
+        {% for project in user.project_set.all %}
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
           <div class="projects preview-box box">
-            <a href="#">Трипільскі-пам’ятки</a>
-            <p class="text-muted">Трипільські пам’ятки Київського Подніпров’я (demo)</p>
+            <a href="{% url 'archapp:manage-project' user.username|slugify project.pk %}">{{project.name}}</a>
+            <p class="text-muted">{{project.description}}</p>
           </div>
         </div>
+        {% endfor %}
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 site-preview">
           <div class="projects preview-box box">
             <a href="#">Антропоморф-пластика-тк</a>

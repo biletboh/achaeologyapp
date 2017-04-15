@@ -10,6 +10,17 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
+# archaeology Project
+class Project(models.Model):
+    name = models.CharField(max_length = 128)
+    description = models.CharField(max_length = 256)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    
+    def __str__(self):
+        return self.name
+
+
 # all possible Property value types
 class ValueType(DjangoChoices):
     integer = ChoiceItem(1, "Integer")
@@ -30,8 +41,13 @@ class Filter(models.Model):
     name = models.CharField(max_length = 128)
     basic = models.BooleanField(default = False)
     hidden = models.BooleanField(default = False)
-    parent = models.ForeignKey('self', null = True, blank = True, related_name = 'subfilters')
-    oftype = models.IntegerField(default = 1, verbose_name = "Value type", choices = ValueType.choices)
+    parent = models.ForeignKey('self', null = True,
+        blank = True, related_name = 'subfilters')
+    oftype = models.IntegerField(
+        default = 1,
+        verbose_name = "Value type",
+        choices = ValueType.choices)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -81,17 +97,6 @@ class Site(models.Model):
 
     def __str__(self):
         return self.name
-
-# archaeology Project
-class Project(models.Model):
-    name = models.CharField(max_length = 128)
-    description = models.CharField(max_length = 256)
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
-    filters = models.ManyToManyField(Filter)
-    
-    def __str__(self):
-        return self.name
-
 
 # Site photos
 class Image(models.Model):

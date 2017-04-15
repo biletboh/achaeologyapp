@@ -186,10 +186,10 @@ $(function(){
           </a>
           <ul id="profile-menu" class="dropdown-menu pull-right text-left" aria-labelledby="dLabel">
             <li>
-            <a href = "{% url 'archapp:userprofile' user %}" class="btn btn-sm">{% trans "My Profile" %}</a>
+            <a href = "{% url 'archapp:userprofile' user|slugify %}" class="btn btn-sm">{% trans "My Profile" %}</a>
             </li>
             <li>
-            <a href = "{% url 'archapp:user-update' user %}" class="btn btn-sm">{% trans "Update Profile" %}</a>
+            <a href = "{% url 'archapp:user-update' user|slugify %}" class="btn btn-sm">{% trans "Update Profile" %}</a>
             </li>
 
             <li>

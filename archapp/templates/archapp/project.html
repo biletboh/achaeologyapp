@@ -1,0 +1,93 @@
+{% extends "archapp/base.html" %}
+{% load widget_tweaks %}
+{% load object_attributes %}
+{% load i18n %}
+{% block content %}
+
+<div class="section section-gray">
+  <div class="container box">
+    <div class="row text-center custom-page-header">
+      <div class="col-md-12">
+        <h3 class="site-name">{% trans "Manage the Project" %} {{object.name}}</h3>
+      </div>
+    </div>
+    {%for item in object.filter_set.all%}
+    <div class="row">
+      <div class="col-md-12">
+        {{item}} - {{item.oftype}} - {{item.basic}}
+      </div>
+    </div>
+    {%endfor%}
+    <form id="user-update-form" action="" method="post">
+      {% csrf_token %}
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      <ul class="nav nav-tabs" role="tablist">
+        {% for fset in form.fieldsets %}
+        <li role = "presentation"{% if forloop.first %} class="active"{% endif %}>
+        <a href = "#{{ fset.legend }}" role = "tab" data-toggle = "tab">{{ fset.description }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <div class="tab-content">
+          <div class="form-group-custom margin-top">
+            {% for field in form %}
+            <div class="form-group-item">
+              {% if not field.is_hidden %}
+              {{field.label_tag}}                    
+              {% endif %}
+              {% if fset.legend = "user_profile" %}
+              {% with user.user_profile|object_attributes:field as val %}
+
+              {% render_field field class+="form-control form-custom" value=val %}
+              {% endwith %}
+              {% else %}
+              {% with user|object_attributes:field as val %}
+              {% render_field field class+="form-control form-custom" value=val %}
+              {% endwith %}
+              {% endif %}
+              {{ field.errors }}
+            </div>
+            {% endfor %}
+            <div class="checkbox">
+              <label><input id="select" type="checkbox" value="">Select Field</label>
+            </div>
+          </div>
+        </div>
+        {% for form in formset %}
+        {{ form }}
+        {% endfor %}
+        <div class="text-center">
+          <input type="submit" class="btn btn-primary" value="{% trans 'Create' %}" />
+        <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
+      </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+$(function() {
+    function setBasicValue (value) {$(
+      '#id_basic').prop('value', value);
+    };
+
+    setBasicValue('True');
+
+    $('#select').change(function(){
+      if (this.checked) {
+      setBasicValue('False');
+      } else {
+      setBasicValue('True');
+      };
+      });
+    });
+</script>
+
+{% endblock %}

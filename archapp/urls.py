@@ -27,4 +27,8 @@ urlpatterns = [
         url(r'user/(?P<slug>[\w.@+-]+)/profile/$', views.UserProfileAndCreateProject.as_view(), name='userprofile'),
         url(r'user/(?P<slug>[\w.@+-]+)/update/$', views.UserUpdate.as_view(), name = 'user-update'),
         url(r'user/(?P<slug>[\w.@+-]+)/delete/$', views.UserDelete.as_view(), name = 'user-delete'),
+
+        # project management
+        url(r'(?P<slug>[\w.@+-]+)/projects/(?P<pk>[0-9]+)/$', 
+            views.ManageProjectFilters.as_view(), name = 'manage-project'),
         ]
