@@ -1,7 +1,9 @@
 from django import template
 from django.utils.translation import ugettext as _
 
+
 register = template.Library()
+
 
 @register.filter
 def object_attributes(obj, field):
@@ -11,3 +13,4 @@ def object_attributes(obj, field):
     except AttributeError:
         val = ""
     return val
+
