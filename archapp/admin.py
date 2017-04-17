@@ -2,17 +2,19 @@ from django.contrib import admin
 from django.db.models import Sum, Count, Case, When, IntegerField
 from .models import Site, Filter, Property, UserProfile
 
+
 class PropertyAdmin(admin.ModelAdmin):
     list_display = ('ofsite', '__str__', 'instance')
-    #list_editable = ('oftype', 'instance')
+    # list_editable = ('oftype', 'instance')
     list_filter = ('instance',)
 
     def ofsite(self, obj):
-        return obj.site_set.get()#filter(obj)
+        return obj.site_set.get()  # filter(obj)
 
-#class FilterInline(admin.StackedInline):
+# class FilterInline(admin.StackedInline):
 #    model = Filter
 #    fields = ['name', 'parent', 'oftype']
+
 
 class FilterAdmin(admin.ModelAdmin):
     list_filter = ('parent', )

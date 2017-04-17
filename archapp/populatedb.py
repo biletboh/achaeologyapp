@@ -7,12 +7,14 @@ from django.utils import translation
 from django.contrib.auth.models import User
 from archapp.models import Site, Filter, ValueType, Property
 
+
 # Convert DMS latlon format to DD
 def dms2dd(degrees, minutes, seconds, direction):
-    dd = float(degrees) + float(minutes)/60 + float(seconds)/(60*60);
+    dd = float(degrees) + float(minutes)/60 + float(seconds)/(60*60)
     if direction == 'S' or direction == 'W':
         dd *= -1
-    return dd;
+    return dd
+
 
 def formatted(coord):
     degrees = int(coord[0:2])
@@ -22,12 +24,13 @@ def formatted(coord):
 
     return dms2dd(degrees, minutes, seconds, direction)
 
-def populate_from_excel(path, who = 'admin', latlon = True):
+
+def populate_from_excel(path, who='admin', latlon=True):
     wb = openpyxl.load_workbook(path)
     geo = GeoCoder(GeoCoder.Type.google)
-    user = User.objects.all().filter(username = who).get()
+    user = User.objects.all().filter(username=who).get()
     sheet = wb.active
-    filters = Filter.objects.filter(basic = True)
+    filters = Filter.objects.filter(basic=True)
 
     for row in sheet.rows:
         lng = 0.0
@@ -42,7 +45,7 @@ def populate_from_excel(path, who = 'admin', latlon = True):
             lat = formatted(row[1].value)
 
         name = row[2].value
-        newsite = Site(name = name, user = user)
+        newsite = Site(name=name, user=user)
         newsite.save()
 
         print ("adding '{}'".format(name))
@@ -77,21 +80,29 @@ def populate_from_excel(path, who = 'admin', latlon = True):
                         # try to get geo data in specified language
                         with translation.override(lang):
                             geocoded = geo.reverse(lat, lng, lang, name)
-                            geocoded = geocoded or translation.ugettext('Unknown') # maybe try another provider here?
+                            # maybe try another provider here?
+                            geocoded = geocoded or translation.ugettext('Unknown')  
 
                         # let's search for it
                         try:
-                            prop = Property.objects.language(lang).get(instance = instance, string = geocoded)
+                            prop = Property.objects.language(lang).get(
+                                                                    instance=instance,
+                                                                    string=geocoded
+                                                                    )
                         except Property.DoesNotExist:
-                            missing.append( (lang, geocoded) )
+                            missing.append((lang, geocoded))
                 else:
-                    # for plain string properties just copy provided text to all translations
-                    missing = [(code, args['string']) for code, full in settings.LANGUAGES]
+                    # for plain string properties just copy provided text
+                    # to all translations
+                    missing = [
+                            (code, args['string']) for code, full in settings.LANGUAGES
+                            ]
 
-                # if no translations available, create property without translation
+                # if no translations available, create property
+                # without translation
                 if prop is None:
-                    prop = Property.objects.create(instance = instance)
-                    prop.save(update_fields = ['instance'])
+                    prop = Property.objects.create(instance=instance)
+                    prop.save(update_fields=['instance'])
 
                 # finally fill missing translations
                 for lang, translated in missing:
@@ -105,9 +116,11 @@ def populate_from_excel(path, who = 'admin', latlon = True):
             else:
                 # fill position
                 if name == "latitude":
-                    prop = Property.objects.create(instance = instance, double = lat)
+                    prop = Property.objects.create(
+                                                instance=instance, double=lat)
                 elif name == "longtitude":
-                    prop = Property.objects.create(instance = instance, double = lng)
+                    prop = Property.objects.create(
+                                                instance=instance, double=lng)
                 else:
                     prop = Property.objects.create(**args)
 

@@ -3,7 +3,9 @@ from archapp.models import ImageType
 from django.conf import settings
 from easy_thumbnails.files import get_thumbnailer
 
+
 register = template.Library()
+
 
 # filter particular image types from all images
 @register.filter
@@ -15,6 +17,8 @@ def pick_type(objs, oftype):
             result.append(i)
 
     return result
+
+
 # filter multiple image types from all images
 @register.filter
 def pick_mult_types(objs, oftypes):
@@ -26,10 +30,12 @@ def pick_mult_types(objs, oftypes):
                 result.append(i)
     return result
 
+
 # get specific size of a single image
 @register.filter
 def pick_size(obj, size):
     return get_thumbnailer(obj.image)[size].url
+
 
 # get first image of a list with specific size
 @register.filter

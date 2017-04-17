@@ -1,7 +1,9 @@
 from geopy.geocoders import GoogleV3, Nominatim
 from django.utils import translation
 
+
 class GeoCoder:
+
     class Type:
         google = 1
         osm = 2
@@ -15,34 +17,39 @@ class GeoCoder:
         elif coder_type == self.Type.osm:
             self.coder = Nominatim()
 
-        self.mapping = { self.Type.google: 
-                                     { 'country': ['country'],
-                                       'region': ['administrative_area_level_1'],
-                                       'district': ['administrative_area_level_2', 'administrative_area_level_3'],
-                                       'settlement': ['locality', 'route'] },
-                         self.Type.osm:   
-                                     { 'country': ['country'],
-                                       'region': ['state'],
-                                       'district': ['county'],
-                                       'settlement': ['city', 'hamlet', 'village'] } }
+        self.mapping = {
+                    self.Type.google: {
+                                    'country': ['country'],
+                                    'region': ['administrative_area_level_1'],
+                                    'district': [
+                                            'administrative_area_level_2',
+                                            'administrative_area_level_3'],
+                                    'settlement': ['locality', 'route']
+                                    },
+                    self.Type.osm: {
+                                'country': ['country'],
+                                'region': ['state'], 'district': ['county'],
+                                'settlement': ['city', 'hamlet', 'village']
+                                }
+                    }
 
-    def filters(self, name = None):
+    def filters(self, name=None):
         return list(self.mapping[self.coder_type].keys())
 
-    def reverse(self, lat = 0.0, lng = 0.0, lang = None, name = 'country', raw = False):
+    def reverse(self, lat=0.0, lng=0.0, lang=None, name='country', raw=False):
         if lang is None:
             lang = translation.get_language()
 
         key = '{0}{1}{2}'.format(lat, lng, lang)
 
-        if not key in self.cache:
+        if key not in self.cache:
             cached = None
             exceptions = 0
 
             while not cached and exceptions < 3:
                 try:
-                    cached = self.coder.reverse((lat, lng), language = lang)
-                except: # timeout, not available
+                    cached = self.coder.reverse((lat, lng), language=lang)
+                except:  # timeout, not available
                     exceptions += 1
 
             self.cache[key] = cached
@@ -68,3 +75,4 @@ class GeoCoder:
                         data = i
 
         return data
+

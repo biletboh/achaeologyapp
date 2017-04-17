@@ -1,7 +1,9 @@
 from django import template
 from django import forms
 
+
 register = template.Library()
+
 
 @register.filter
 def default_choice(field, choice):
@@ -14,8 +16,10 @@ def default_choice(field, choice):
         field.field.initial = choice_id
     return field
 
+
 @register.filter
 def default_textarea(field, value):
     if value:
-        field.field.initial= value
+        field.field.initial = value
     return field
+

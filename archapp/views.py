@@ -1,31 +1,38 @@
-from archapp.models import Site, Filter, Image, Property, ValueType, ImageType, UserProfile, Project
-from django.views.generic import View, DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
-from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ListSearchForm, EditSiteForm, ProjectForm, CreateFilterForm#, CreateFilterFormSet
+from django.views.generic import View, DetailView, TemplateView, ListView
+from django.views.generic import CreateView, UpdateView, DeleteView, FormView
+from django.views.generic.edit import FormMixin
+from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import Context, loader
+from django.template.defaultfilters import slugify
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import FormMixin
-from django.views.generic.detail import SingleObjectMixin
 from django.forms import ValidationError
-from hvad.utils import get_translation_aware_manager
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import translation
 from django.conf import settings
-from archapp.geo import GeoCoder
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
-from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
+
+from hvad.utils import get_translation_aware_manager
+
+from archapp.models import Site, Filter, Image, Property, ValueType, Project
+from archapp.models import ImageType, UserProfile
+from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ProjectForm
+from archapp.forms import ListSearchForm, EditSiteForm, CreateFilterForm
+from archapp.geo import GeoCoder
+
 
 # TODO: look for proper django choices implementation
 def ValueTypeToString(value):
     return [b.lower() for a, b in ValueType.choices if a == value.oftype][0]
 
+
 # type conversion
-def FixValueType(vt, data, value = None, dicted = False):
+def FixValueType(vt, data, value=None, dicted=False):
     tmp = None
 
     if vt.oftype == ValueType.integer:
@@ -42,12 +49,14 @@ def FixValueType(vt, data, value = None, dicted = False):
     else:
         return tmp
 
+
 class SiteProcessingView(object):
+
     # update or create new filter values
-    def process_filters_and_pics(self, site, form, editing = False):
+    def process_filters_and_pics(self, site, form, editing=False):
         geo = GeoCoder(GeoCoder.Type.google)
         values = form.cleaned_data
-        filters = Filter.objects.filter(basic = True)
+        filters = Filter.objects.filter(basic=True)
 
         for instance in filters:
             prop = None
@@ -73,22 +82,30 @@ class SiteProcessingView(object):
                     for lang, etc in settings.LANGUAGES:
                         # try to get geo data in specified language
                         with translation.override(lang):
-                            geocoded = geo.reverse(values['latitude'], values['longtitude'], lang, name)
-                            geocoded = geocoded or translation.ugettext('Unknown') # maybe try another provider here?
+                            geocoded = geo.reverse(
+                                                values['latitude'],
+                                                values['longtitude'],
+                                                lang, name)
+                            # maybe try another provider here?
+                            geocoded = geocoded or translation.ugettext('Unknown')
 
                         # let's search for it
                         try:
-                            prop = Property.objects.language(lang).get(instance = instance, string = geocoded)
+                            prop = Property.objects.language(lang).get(
+                                                                    instance=instance,
+                                                                    string=geocoded)
                         except Property.DoesNotExist:
-                            missing.append( (lang, geocoded) )
+                            missing.append((lang, geocoded))
                 else:
-                    # for plain string properties just copy provided text to all translations
+                    # for plain string properties just copy provided
+                    # text to all translations
                     missing = [(code, args['string']) for code, full in settings.LANGUAGES]
 
-                # if no translations available, create property without translation
+                # if no translations available, create property
+                # without translation
                 if prop is None:
-                    prop = Property.objects.create(instance = instance)
-                    prop.save(update_fields = ['instance'])
+                    prop = Property.objects.create(instance=instance)
+                    prop.save(update_fields=['instance'])
 
                 # finally fill missing translations
                 for lang, translated in missing:
@@ -97,13 +114,13 @@ class SiteProcessingView(object):
 
                     try:
                         prop.save()
-                    except: # translation already exists
+                    except:  # translation already exists
                         pass
 
             # process other property types
             else:
                 if editing:
-                    site.props.filter(instance = instance).update(**args)
+                    site.props.filter(instance=instance).update(**args)
                 else:
                     prop = Property.objects.create(**args)
 
@@ -122,7 +139,7 @@ class SiteProcessingView(object):
                     pic = [pic]
 
                 for each in pic:
-                    tmp = Image.objects.create(site = site, oftype = i, image = each)
+                    tmp = Image.objects.create(site=site, oftype=i, image=each)
                     tmp.save()
 
         # delete data from temp_uploads
@@ -131,16 +148,18 @@ class SiteProcessingView(object):
         # delete images
         if editing:
             trash = form.cleaned_data['delete_pics'].split(',')
-            pics  = [int(x) if x.isdigit() else None for x in trash]
+            pics = [int(x) if x.isdigit() else None for x in trash]
 
             # process only integers
             for img in pics:
                 if img is not None:
                     try:
-                        # operate directly on queryset, don't need to fetch the data
-                        pic = site.image_set.filter(id = img).delete()
+                        # operate directly on queryset, don't
+                        # need to fetch the data
+                        pic = site.image_set.filter(id=img).delete()
                     except:
                         pass
+
 
 class SiteCreate(LoginRequiredMixin, FormView, SiteProcessingView):
     template_name = 'archapp/newsite.html'
@@ -152,21 +171,21 @@ class SiteCreate(LoginRequiredMixin, FormView, SiteProcessingView):
     def form_valid(self, form):
         siteuser = self.request.user
         sitename = form.cleaned_data['name']
-        newsite = Site(name = sitename, user = siteuser)
+        newsite = Site(name=sitename, user=siteuser)
         newsite.save()
 
         # process all filters and images
-        self.process_filters_and_pics(site = newsite, form = form, editing = False)
+        self.process_filters_and_pics(site=newsite, form=form, editing=False)
 
         newsite.data = {'Bibliography': form.cleaned_data['literature']}
         newsite.save()
 
         return super(SiteCreate, self).form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super(SiteCreate, self).get_context_data(**kwargs)
         context['title'] = "New Site"
         return context
-
 
     
 class SitePage(LoginRequiredMixin, DetailView):
@@ -179,6 +198,7 @@ class SitePage(LoginRequiredMixin, DetailView):
         context['sview'] = True
         context['title'] = "Site Page"
         return context
+
 
 class SiteEdit(LoginRequiredMixin, FormMixin, DetailView, SiteProcessingView):
     manager = get_translation_aware_manager(Site)
@@ -209,7 +229,7 @@ class SiteEdit(LoginRequiredMixin, FormMixin, DetailView, SiteProcessingView):
 
     def form_valid(self, form):
         # obtain current site, root can edit all of them
-        params = { 'pk' : form.cleaned_data['site_id'] }
+        params = {'pk': form.cleaned_data['site_id']}
 
         if not self.request.user.is_superuser:
             params['user'] = self.request.user
@@ -221,7 +241,7 @@ class SiteEdit(LoginRequiredMixin, FormMixin, DetailView, SiteProcessingView):
             site.name = form.cleaned_data['name']
 
             # update all filters and images
-            self.process_filters_and_pics(site = site, form = form, editing = True)
+            self.process_filters_and_pics(site=site, form=form, editing=True)
 
             # get 'bibliography'
             lit = form.cleaned_data['literature']
@@ -241,15 +261,16 @@ class SiteEdit(LoginRequiredMixin, FormMixin, DetailView, SiteProcessingView):
             # other's precious data.
             return super(SiteEdit, self).form_valid(form)
 
+
 class SiteDelete(LoginRequiredMixin, DeleteView):
     model = Site
     success_url = '/all/' 
     template_name = 'archapp/delete.html'
+
     def get_context_data(self, **kwargs):
         context = super(SiteDelete, self).get_context_data(**kwargs)
         context['title'] = "Delete Site"
         return context
-
 
 
 class AllSites(LoginRequiredMixin, FormMixin, ListView):
@@ -262,10 +283,10 @@ class AllSites(LoginRequiredMixin, FormMixin, ListView):
     def get_queryset(self):
         queryset = Site.objects
         defaults = {} if self.request.user.is_superuser else {'user': self.request.user}
-        filtered = queryset#.filter()
+        filtered = queryset  #.filter()
 
         if self.request.method == 'POST':
-            flts = Filter.objects.filter(basic = True)
+            flts = Filter.objects.filter(basic=True)
             data = self.request.POST.copy()
 
             # filter name
@@ -289,19 +310,21 @@ class AllSites(LoginRequiredMixin, FormMixin, ListView):
                         if value >= 0:
                             # construct another SQL AND clause
                             variable = ValueTypeToString(instance)
-                            fltquery = { 'props__instance': instance.id, 'props__' + variable: value }
+                            fltquery = {
+                                    'props__instance': instance.id,
+                                    'props__' + variable: value}
                             filtered = filtered.filter(**fltquery)
                     else:
                         pass
                         # get_translation_aware_manager() and friends
-                        #manager = get_translation_aware_manager(Site)
-                        #queryset = manager.language()
-
+                        # manager = get_translation_aware_manager(Site)
+                        # queryset = manager.language()
             
-            #print(filtered.query)
-            #print(filtered)
+            # print(filtered.query)
+            # print(filtered)
 
         return filtered.filter(**defaults)
+
     def get_context_data(self, **kwargs):
         context = super(AllSites, self).get_context_data(**kwargs)
         context['title'] = "All Sites"
@@ -313,12 +336,15 @@ class AllSites(LoginRequiredMixin, FormMixin, ListView):
     def post(self, request, *args, **kwargs):
         return super(AllSites, self).get(request, args, kwargs)
 
+
 class Search(LoginRequiredMixin, ListView):
     model = Site
     template_name = 'archapp/search.html'
 
+
 class WelcomePage(TemplateView):
     template_name = 'archapp/welcome.html'
+
     def get_context_data(self, **kwargs):
         context = super(WelcomePage, self).get_context_data(**kwargs)
         context['title'] = "Welcome page"
@@ -351,7 +377,7 @@ class SignUp(FormView):
 class UserProfile(LoginRequiredMixin, DetailView):
     template_name = 'archapp/userprofile.html'
     model = User
-    slug_field = 'username'
+    slug_field = "username"
 
     def get_context_data(self, **kwargs):
         context = super(UserProfile, self).get_context_data(**kwargs)
@@ -386,7 +412,7 @@ class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         user = self.request.user
         userprofile = user.user_profile 
         user.username = form.cleaned_data['username']
-        user.email =  form.cleaned_data['email']
+        user.email = form.cleaned_data['email']
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
         country = form.cleaned_data['country']
@@ -400,12 +426,11 @@ class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         userprofile.city = city 
         userprofile.organization = organization
 
-
-       # password1 = form.cleaned_data["password1"]
-       # password2 = form.cleaned_data["password2"]
-       # if password1 and password2 and password1 != password2:
-       #     msg = "Passwords don't match"
-       #     raise form.ValidationError("Password mismatch")
+        # password1 = form.cleaned_data["password1"]
+        # password2 = form.cleaned_data["password2"]
+        # if password1 and password2 and password1 != password2:
+        #     msg = "Passwords don't match"
+        #     raise form.ValidationError("Password mismatch")
 
         user.save()
         return super(UserUpdateFormView, self).form_valid(form)
@@ -413,6 +438,7 @@ class UserUpdateFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     def get_success_url(self):
         user = self.request.user
         return reverse("archapp:userprofile", kwargs = {'slug': slugify(user.username)})
+
 
 class UserUpdate(View):
 
@@ -423,6 +449,7 @@ class UserUpdate(View):
     def post(self, request, *args, **kwargs):
         view = UserUpdateFormView.as_view()
         return view(request, *args, **kwargs)
+
 
 class UserDelete(LoginRequiredMixin, DeleteView):
     model = User
@@ -438,6 +465,7 @@ class CreateProject(LoginRequiredMixin, FormView):
         user = self.request.user
         project = user.project_set.create(name=form.cleaned_data['name'], description = form.cleaned_data['description'])
         return HttpResponseRedirect(reverse('archapp:manage-project', kwargs={'slug': self.kwargs['slug'], 'pk': project.pk}))
+
 
 class UserProfileAndCreateProject(View):
 
@@ -461,6 +489,7 @@ class ManageProject(LoginRequiredMixin, DetailView):
 #        context['formset'] = CreateFilterFormSet()
         context['title'] = "Manage a Project"
         return context
+
 
 class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
     template_name = 'archapp/project.html'
@@ -488,6 +517,7 @@ class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
             )
 
         return super(AddFilters, self).form_valid(form)
+
 
 class ManageProjectFilters(View):
 
