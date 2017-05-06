@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models import Sum, Count, Case, When, IntegerField
-from .models import Site, Filter, Property, UserProfile
+from .models import Site, Filter, Property, UserProfile, Project
 
 
 class PropertyAdmin(admin.ModelAdmin):
@@ -45,3 +45,5 @@ admin.site.register(Site)
 admin.site.register(Property, PropertyAdmin)
 admin.site.register(Filter, FilterAdmin)
 admin.site.register(UserProfile)
+admin.site.register(Project)
+
