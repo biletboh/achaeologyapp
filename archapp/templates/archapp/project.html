@@ -11,13 +11,6 @@
         <h3 class="site-name">{% trans "Manage the Project" %} {{object.name}}</h3>
       </div>
     </div>
-    {%for item in object.filter_set.all%}
-    <div class="row">
-      <div class="col-md-12">
-        {{item}} - {{item.oftype}} - {{item.basic}}
-      </div>
-    </div>
-    {%endfor%}
     <form id="user-update-form" action="" method="post">
       {% csrf_token %}
       {% if messages %}
