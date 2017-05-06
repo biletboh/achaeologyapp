@@ -13,7 +13,16 @@ from django_file_form.forms import UploadedFileField, MultipleUploadedFileField
 class FilterForm(betterforms.BetterForm):
 
     # define fieldsets
-    def create_fieldsets():
+    def create_fieldsets(query={'basic': True}):
+        filters = Filter.objects.filter(**query)
+        fieldset = []
+        try:
+            for e in filters:
+                formatted_name = e.name.lower()
+                fieldset.append(formatted_name)
+        except:
+            pass
+        print(fieldset)
         return [
                 ('1', {
                     'description': _('Basic data'), 'legend': 'maintab',
@@ -24,11 +33,7 @@ class FilterForm(betterforms.BetterForm):
                         }),
                 ('2', {
                     'description': _('Description'), 'legend': 'desctab',
-                    'fields': [
-                            'riversystem', 'area', 'areawidth',
-                            'areaheight', 'topography', 'geomorphology',
-                            'altitude', 'valleyaltitude', 'datingfrom',
-                            'datingto', 'dating', 'undefined']
+                    'fields': fieldset 
                         }),
                 ('3', {
                     'description': _('Attachments'), 'legend': 'mediatab',
