@@ -20,9 +20,10 @@ from django.utils.translation import ugettext_lazy as _
 from hvad.utils import get_translation_aware_manager
 
 from archapp.models import Site, Filter, Image, Property, ValueType, Project
-from archapp.models import ImageType, UserProfile
+from archapp.models import ImageType, UserProfile, Tab
 from archapp.forms import NewSiteForm, SignUpForm, UserUpdateForm, ProjectForm
 from archapp.forms import ListSearchForm, EditSiteForm, CreateFilterForm
+from archapp.forms import TabForm 
 from archapp.geo import GeoCoder
 
 
@@ -478,6 +479,31 @@ class UserProfileAndCreateProject(View):
         return view(request, *args, **kwargs)
 
 
+class CreateTab(LoginRequiredMixin, SingleObjectMixin, FormView):
+    form_class = TabForm 
+    model = Project
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(CreateTab, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        project = self.object
+        new_tab, created = Tab.objects.get_or_create(
+            name=form.cleaned_data['name'],
+            order=form.cleaned_data['order'],
+            project=project
+            )
+
+        return super(CreateTab, self).form_valid(form)
+    
+    def get_success_url(self):
+        return reverse(
+            'archapp:manage-project',
+            kwargs={'slug': self.kwargs['slug'], 
+            'pk': self.object.pk})
+
+
 class ManageProject(LoginRequiredMixin, DetailView):
     model = Project 
     template_name = 'archapp/project.html'
@@ -486,13 +512,14 @@ class ManageProject(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ManageProject, self).get_context_data(**kwargs)
         context['form'] = CreateFilterForm() 
-#        context['formset'] = CreateFilterFormSet()
+        context['tabform'] = TabForm()
+        context['tabs'] = Tab.objects.filter(project=self.object) 
         context['title'] = "Manage a Project"
         return context
 
 
 class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
-    template_name = 'archapp/project.html'
+    #template_name = 'archapp/project.html'
     form_class = CreateFilterForm
     model = Project
 
@@ -500,15 +527,8 @@ class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
         self.object = self.get_object()
         return super(AddFilters, self).post(request, *args, **kwargs)
 
-    def get_success_url(self):
-        return reverse(
-            'archapp:manage-project',
-            kwargs={'slug': self.kwargs['slug'], 
-            'pk': self.object.pk})
-
     def form_valid(self, form):
         project = self.object
-        print(form.cleaned_data['basic'])
         new_filter, created = Filter.objects.get_or_create(
             name=form.cleaned_data['name'],
             basic=form.cleaned_data['basic'],
@@ -517,6 +537,12 @@ class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
             )
 
         return super(AddFilters, self).form_valid(form)
+    
+    def get_success_url(self):
+        return reverse(
+            'archapp:manage-project',
+            kwargs={'slug': self.kwargs['slug'], 
+            'pk': self.object.pk})
 
 
 class ManageProjectFilters(View):
@@ -526,6 +552,11 @@ class ManageProjectFilters(View):
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        view = AddFilters.as_view()
+
+        if 'new-filter' in request.POST:
+            view = AddFilters.as_view()
+        elif 'new-tab' in request.POST:
+            view = CreateTab.as_view() 
+
         return view(request, *args, **kwargs)
 

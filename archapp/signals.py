@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from archapp.models import User, Project, Filter
+from archapp.models import User, Project, Filter, Tab
 
 
 @receiver(post_save, sender=User)
@@ -20,6 +20,8 @@ def save_user_profile(sender, instance, **kwargs):
 def create_basic_filters(sender, instance, created, **kwargs):
 
     if created:
+        tab = Tab.objects.create(name='main', project=instance)
+
         default_filters = [
                         {
                         "name": "Country",
@@ -53,6 +55,7 @@ def create_basic_filters(sender, instance, created, **kwargs):
                         "hidden": 1,
                         "basic": 1
                         }]
+
         for kw in default_filters:
-            Filter.objects.create(project=instance, **kw) 
+            Filter.objects.create(project=instance, tab=tab, **kw) 
 

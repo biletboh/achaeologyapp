@@ -22,7 +22,7 @@ class FilterForm(betterforms.BetterForm):
                 fieldset.append(formatted_name)
         except:
             pass
-        print(fieldset)
+
         return [
                 ('1', {
                     'description': _('Basic data'), 'legend': 'maintab',
@@ -227,17 +227,22 @@ class ProjectForm(forms.Form):
     description = forms.CharField(label=_('Description'), max_length=256)
 
 
+class TabForm(forms.Form):
+    name = forms.CharField(label=_('Tab name'), max_length=128)
+    order = forms.IntegerField(label='Tab order', initial=2)
+
 class CreateFilterForm(betterforms.BetterForm):
     
     name = forms.CharField(required=True) 
-    oftype = forms.IntegerField(
+    oftype = forms.IntegerField(label='Field Type',
             widget=forms.Select(choices=ValueType.choices))
     basic = forms.BooleanField(
         widget=forms.widgets.HiddenInput(),
         required=False)
 
     class Meta:
-        fieldsets = [('1', {'description': _('Create Filters'), 'legend': 'create_filters', 'fields': ['name', 'oftype', 'basic'], })]
+        fieldsets = [('1', {'description': _('Create Fields'), 'legend': 'create_filters', 'fields': ['name', 'oftype', 'basic'], })]
 
 
 #CreateFilterFormSet = formset_factory(CreateFilterForm, extra=2,)
+

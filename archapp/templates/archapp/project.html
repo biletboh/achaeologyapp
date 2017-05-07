@@ -11,7 +11,15 @@
         <h3 class="site-name">{% trans "Manage the Project" %} {{object.name}}</h3>
       </div>
     </div>
-    <form id="user-update-form" action="" method="post">
+    <div class="row">
+      <div class="col-md-12">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newtab">
+            <i class="fa fa-plus-square-o fa-2x" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+    <form id="filter-form" name="filter-form" action="" method="post">
       {% csrf_token %}
       {% if messages %}
       <ul class="messages">
@@ -20,10 +28,11 @@
         {% endfor %}
       </ul>
       {% endif %}
+      
       <ul class="nav nav-tabs" role="tablist">
-        {% for fset in form.fieldsets %}
-        <li role = "presentation"{% if forloop.first %} class="active"{% endif %}>
-        <a href = "#{{ fset.legend }}" role = "tab" data-toggle = "tab">{{ fset.description }}</a>
+        {% for tab in tabs %}
+        <li role="presentation"{% if forloop.first %} class="active"{% endif %}>
+        <a href="#{{ tab.name }}" role="tab" data-toggle="tab">{{ tab.name }}</a>
         </li>
         {% endfor %}
       </ul>
@@ -35,16 +44,7 @@
               {% if not field.is_hidden %}
               {{field.label_tag}}                    
               {% endif %}
-              {% if fset.legend = "user_profile" %}
-              {% with user.user_profile|object_attributes:field as val %}
-
-              {% render_field field class+="form-control form-custom" value=val %}
-              {% endwith %}
-              {% else %}
-              {% with user|object_attributes:field as val %}
-              {% render_field field class+="form-control form-custom" value=val %}
-              {% endwith %}
-              {% endif %}
+              {% render_field field class+="form-control form-custom" %}
               {{ field.errors }}
             </div>
             {% endfor %}
@@ -53,17 +53,36 @@
             </div>
           </div>
         </div>
-        {% for form in formset %}
-        {{ form }}
-        {% endfor %}
         <div class="text-center">
-          <input type="submit" class="btn btn-primary" value="{% trans 'Create' %}" />
+          <input type="submit" class="btn btn-primary" name='new-filter' value="{% trans 'Create' %}" />
         <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
       </div>
       </div>
     </form>
   </div>
 </div>
+
+<!-- New Tab Modal -->
+<div class="modal fade" id="newtab" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{% trans "Create new tab" %}</h4>
+      </div>
+      <form action="" name='tab-form' method="post">{% csrf_token %}
+        <div class="modal-body">
+                {{ tabform.as_p }}
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-primary" name='new-tab' value="{% trans "Create" %}" />
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script>
 $(function() {

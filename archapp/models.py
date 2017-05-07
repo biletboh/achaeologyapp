@@ -34,6 +34,20 @@ class ImageType(DjangoChoices):
     found = ChoiceItem(4, "Found")
 
 
+# Tabs for Filter Forms 
+class Tab(models.Model):
+
+    class Meta:
+        ordering = ['order']
+
+    name = models.CharField(max_length=128)
+    order = models.IntegerField(default=1)
+    project = models.ForeignKey(Project, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 # generic Filter for Property referencing
 class Filter(models.Model):
 
@@ -49,7 +63,7 @@ class Filter(models.Model):
                             default=1, verbose_name="Value type",
                             choices=ValueType.choices)
     project = models.ForeignKey(Project, blank=True, on_delete=models.CASCADE)
-    tab = models.IntegerField(default=1)
+    tab = models.ForeignKey(Tab, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
