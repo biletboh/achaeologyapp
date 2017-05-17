@@ -529,11 +529,13 @@ class AddFilters(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     def form_valid(self, form):
         project = self.object
+        tab = project.tab_set.get(order=form.cleaned_data['tab'])
         new_filter, created = Filter.objects.get_or_create(
             name=form.cleaned_data['name'],
             basic=form.cleaned_data['basic'],
             oftype=form.cleaned_data['oftype'],
             project=project,
+            tab=tab
             )
 
         return super(AddFilters, self).form_valid(form)

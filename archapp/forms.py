@@ -229,19 +229,25 @@ class ProjectForm(forms.Form):
 
 class TabForm(forms.Form):
     name = forms.CharField(label=_('Tab name'), max_length=128)
-    order = forms.IntegerField(label='Tab order', initial=2)
+    order = forms.IntegerField(
+                            widget=forms.widgets.HiddenInput(),
+                            label='Tab order')
+
 
 class CreateFilterForm(betterforms.BetterForm):
     
     name = forms.CharField(required=True) 
     oftype = forms.IntegerField(label='Field Type',
-            widget=forms.Select(choices=ValueType.choices))
+                            widget=forms.Select(choices=ValueType.choices))
     basic = forms.BooleanField(
-        widget=forms.widgets.HiddenInput(),
-        required=False)
+                            widget=forms.widgets.HiddenInput(),
+                            required=False)
+    tab = forms.IntegerField(
+                            widget=forms.widgets.HiddenInput(),
+                            required=False)
 
     class Meta:
-        fieldsets = [('1', {'description': _('Create Fields'), 'legend': 'create_filters', 'fields': ['name', 'oftype', 'basic'], })]
+        fieldsets = [('1', {'description': _('Create Fields'), 'legend': 'create_filters', 'fields': ['name', 'oftype', 'basic', 'tab'], })]
 
 
 #CreateFilterFormSet = formset_factory(CreateFilterForm, extra=2,)

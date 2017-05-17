@@ -11,55 +11,68 @@
         <h3 class="site-name">{% trans "Manage the Project" %} {{object.name}}</h3>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newtab">
-            <i class="fa fa-plus-square-o fa-2x" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
 
-    <form id="filter-form" name="filter-form" action="" method="post">
-      {% csrf_token %}
-      {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      
-      <ul class="nav nav-tabs" role="tablist">
-        {% for tab in tabs %}
-        <li role="presentation"{% if forloop.first %} class="active"{% endif %}>
-        <a href="#{{ tab.name }}" role="tab" data-toggle="tab">{{ tab.name }}</a>
-        </li>
-        {% endfor %}
-      </ul>
+    <ul class="nav nav-tabs" role="tablist">
+      {% for tab in tabs %}
+      <li role="presentation"{% if forloop.first %} class="active"{% endif %}>
+      <a href="#{{ tab.name|slugify }}" role="tab" data-toggle="tab">{{ tab.name }}</a>
+      </li>
 
-      <div class="tab-content">
+      {% endfor %}
+      <li>
+      <button type="button" class="" data-toggle="modal" data-target="#newtab">
+        <i class="fa fa-plus-square-o fa-2x" aria-hidden="true"></i>
+      </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      {% for tab in tabs %}
+      <div role="tabpanel" class="tab-pane{% if forloop.first %} active{% endif %}" id="{{tab.name|slugify}}">
+
+        <form id="filter-form" name="filter-form" action="" method="post">
+          {% csrf_token %}
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% for filt in tab.filter_set.all%}
+          {{filt}} 
+          {% endfor %}
           <div class="form-group-custom margin-top">
             {% for field in form %}
             <div class="form-group-item">
               {% if not field.is_hidden %}
               {{field.label_tag}}                    
               {% endif %}
+              {% if field.name = "tab" %}
+              <input class="form-control form-custom" id="id_tab" name="tab" type="hidden" value="{{tab.order}}">
+              {% else %}
               {% render_field field class+="form-control form-custom" %}
+              {% endif %}
               {{ field.errors }}
             </div>
             {% endfor %}
+
             <div class="checkbox">
               <label><input id="select" type="checkbox" value="">Select Field</label>
             </div>
           </div>
-        </div>
-        <div class="text-center">
-          <input type="submit" class="btn btn-primary" name='new-filter' value="{% trans 'Create' %}" />
-        <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
+          <div class="text-center">
+            <input type="submit" class="btn btn-primary" name='new-filter' value="{% trans 'Create' %}" />
+            <a href = "{% url 'archapp:welcome'%}" class="btn btn-primary">{% trans 'Cancel' %}</a>
+          </div>
+
+        </form>
       </div>
-      </div>
-    </form>
+      {% endfor %}
+    </div>
   </div>
+</div>
 </div>
 
 <!-- New Tab Modal -->
@@ -72,11 +85,24 @@
       </div>
       <form action="" name='tab-form' method="post">{% csrf_token %}
         <div class="modal-body">
-                {{ tabform.as_p }}
-        </div>
-        <div class="modal-footer">
-          <input type="submit" class="btn btn-primary" name='new-tab' value="{% trans "Create" %}" />
-          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+          <div class="form-group-custom margin-top">
+            {% for field in tabform %}
+            <div class="form-group-item">
+              {% if not field.is_hidden %}
+              {{field.label_tag}}                    
+              {% endif %}
+              {% if field.name = "order" %}
+              {% render_field field class+="form-control form-custom" value=tabs|length|add:1 %}
+              {% else %}
+              {% render_field field class+="form-control form-custom" %}
+              {% endif %}
+            </div>
+            {% endfor %}
+            <div class="modal-footer">
+              <input type="submit" class="btn btn-primary" name='new-tab' value="{% trans "Create" %}" />
+              <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
