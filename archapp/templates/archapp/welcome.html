@@ -3,6 +3,7 @@
 {% block content %}
 {% load static %}
 {% load i18n %}
+
 <div class="parallax filter-gradient blue" data-color="blue">
   <div class="parallax-background">
     <img class="parallax-background-image" src="{% static 'archapp/img/bg3.jpg' %}">
@@ -26,4 +27,24 @@
     </div>
   </div>
 </div>
+
+<div class="section-gray section-clients">
+  <div class="container text-center">
+    <h4 class="header-text">{% trans "Our Partners" %}</h4>
+    <p>
+    {% trans "The project is developed with the support of the Ukrainian leading archeology research institutions." %}
+    </p>
+    <div class="logos">
+      <ul class="list-unstyled">
+        <li>
+        <a href="http://www.ukma.edu.ua/" target="_blank">{% trans "National University of Kyiv-Mohyla Academy" %}</a>
+        </li>
+        <li >
+        <a href="http://www.iananu.kiev.ua/" target="_blank">{% trans "Institute of Archaeology NAS of Ukraine" %}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

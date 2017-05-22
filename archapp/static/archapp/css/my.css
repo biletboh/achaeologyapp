@@ -17,6 +17,12 @@ html, body, {
   min-height: calc(100vh - 171px);
   height: auto !important;
 }
+
+.wrapper > .section-clients {
+  min-height: auto !important;
+  height: auto !important;
+}
+
 a:hover, a:focus {
   text-decoration: none; 
   outline: none;
